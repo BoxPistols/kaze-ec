@@ -131,7 +131,11 @@ export const CheckoutWalletPage = () => {
       {stage === 'escrow' && (
         <Card variant="outlined" sx={{ borderRadius: '12px' }}>
           <CardContent>
-            <Chip label="保留中" size="small" color="warning" sx={{ mb: 1.5 }} />
+            <Chip
+              label="保留中"
+              size="small"
+              sx={{ mb: 1.5, bgcolor: '#f5a623', color: '#fff' }}
+            />
             <Typography variant="body2" sx={{ mb: 2 }}>
               お支払いいただいた金額は、出品者の発送確認までお預かりします。
               発送が確認できるまで出品者には入金されません。
