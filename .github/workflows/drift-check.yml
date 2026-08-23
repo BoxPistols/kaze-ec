@@ -1,0 +1,41 @@
+name: Drift check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: kaze-ec を checkout
+        uses: actions/checkout@v4
+        with:
+          path: kaze-ec
+
+      # design/screen-spec.json は kaze-ux をバンドルしない前提で書かれている。
+      # 比較対象の「今の仕様」は毎回このリポジトリから引く
+      - name: kaze-ux を checkout（比較対象の単一ソース）
+        uses: actions/checkout@v4
+        with:
+          repository: BoxPistols/kaze-ux
+          path: kaze-ux
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: kaze-ec/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: kaze-ec
+
+      - name: ドリフト検出
+        working-directory: kaze-ec
+        env:
+          KAZE_UX_PATH: ${{ github.workspace }}/kaze-ux
+        run: node tools/drift/check-drift.mjs
