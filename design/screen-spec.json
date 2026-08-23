@@ -1,0 +1,60 @@
+{
+  "$description": "画面ごとに宣言する、kaze デザインシステムへの依存の単一ソース。手で書く（生成物ではない）。tools/drift/check-drift.mjs がここと実装ファイルを突き合わせてドリフトを検出する。componentsのsourceがmui のものは kaze MCP の get_component が import: '@mui/material' を返した部品（テーマだけ効かせて MUI をそのまま使う）。source が regenerated のものは import が kaze-ux 内部パス（例: '@/components/ui/toggle-button'）だったため、kaze-ec 側で props 仕様だけを見て再実装した部品",
+  "screens": [
+    {
+      "name": "ItemListPage",
+      "path": "src/pages/ItemListPage.tsx",
+      "components": [
+        { "kaze": "Card", "as": "Card", "source": "mui" },
+        { "kaze": "Chip", "as": "Chip", "source": "mui" },
+        { "kaze": "Button", "as": "Button", "source": "mui" }
+      ],
+      "tokens": [
+        "color.light.primary.main",
+        "color.light.success.main",
+        "borderRadius.xl"
+      ]
+    },
+    {
+      "name": "ItemDetailPage",
+      "path": "src/pages/ItemDetailPage.tsx",
+      "components": [
+        { "kaze": "Chip", "as": "Chip", "source": "mui" },
+        { "kaze": "Button", "as": "Button", "source": "mui" },
+        {
+          "kaze": "UserAvatar",
+          "as": "UserAvatar",
+          "source": "regenerated",
+          "localPath": "src/components/UserAvatar.tsx"
+        }
+      ],
+      "tokens": [
+        "color.light.primary.main",
+        "color.light.warning.main",
+        "borderRadius.xl"
+      ]
+    },
+    {
+      "name": "CheckoutWalletPage",
+      "path": "src/pages/CheckoutWalletPage.tsx",
+      "components": [
+        { "kaze": "Card", "as": "Card", "source": "mui" },
+        { "kaze": "Chip", "as": "Chip", "source": "mui" },
+        { "kaze": "Button", "as": "Button", "source": "mui" },
+        {
+          "kaze": "ToggleButton",
+          "as": "SettlementToggle",
+          "source": "regenerated",
+          "localPath": "src/components/SettlementToggle.tsx"
+        }
+      ],
+      "tokens": [
+        "color.light.primary.main",
+        "color.light.success.main",
+        "color.light.warning.main",
+        "borderRadius.xl",
+        "borderRadius.md"
+      ]
+    }
+  ]
+}
