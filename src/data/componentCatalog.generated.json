@@ -64,6 +64,7 @@
   "components": [
     {
       "kaze": "Card",
+      "as": "Card",
       "source": "mui",
       "localPath": null,
       "spec": {
@@ -94,6 +95,7 @@
     },
     {
       "kaze": "Chip",
+      "as": "Chip",
       "source": "mui",
       "localPath": null,
       "spec": {
@@ -151,6 +153,7 @@
     },
     {
       "kaze": "Button",
+      "as": "Button",
       "source": "mui",
       "localPath": null,
       "spec": {
@@ -209,68 +212,8 @@
       }
     },
     {
-      "kaze": "UserAvatar",
-      "source": "regenerated",
-      "localPath": "src/components/UserAvatar.tsx",
-      "spec": {
-        "name": "UserAvatar",
-        "category": "UI/Avatar",
-        "story": "Components/UI/Avatar/UserAvatar",
-        "storyFile": "src/stories/04-Components/UI/Avatar/UserAvatar.stories.tsx",
-        "import": "@/components/ui/avatar/userAvatar",
-        "variants": [
-          "circular",
-          "rounded",
-          "square"
-        ],
-        "sizes": [
-          "small",
-          "medium",
-          "large"
-        ],
-        "accessibility": [
-          "alt text",
-          "aria-label"
-        ],
-        "props": {
-          "name": {
-            "control": "text"
-          },
-          "size": {
-            "control": "radio",
-            "options": [
-              "small",
-              "medium",
-              "large"
-            ]
-          },
-          "variant": {
-            "control": "radio",
-            "options": [
-              "circular",
-              "rounded",
-              "square"
-            ]
-          },
-          "color": {
-            "control": "select",
-            "options": [
-              "primary",
-              "secondary",
-              "success",
-              "error",
-              "warning",
-              "info"
-            ]
-          },
-          "src": {
-            "control": "text"
-          }
-        }
-      }
-    },
-    {
       "kaze": "IconButton",
+      "as": "AppIconButton",
       "source": "regenerated",
       "localPath": "src/components/AppIconButton.tsx",
       "spec": {
@@ -343,7 +286,202 @@
       }
     },
     {
+      "kaze": "Chip",
+      "as": "TagChip",
+      "source": "regenerated-tailwind",
+      "localPath": "src/components/tw/TagChip.tsx",
+      "spec": {
+        "name": "Chip",
+        "category": "UI",
+        "story": "Components/UI/Chip",
+        "storyFile": "src/stories/04-Components/UI/Chip/Chip.stories.tsx",
+        "import": "@mui/material",
+        "variants": [
+          "filled",
+          "outlined"
+        ],
+        "sizes": [
+          "small",
+          "medium"
+        ],
+        "props": {
+          "label": {
+            "control": "text"
+          },
+          "variant": {
+            "control": "select",
+            "options": [
+              "filled",
+              "outlined"
+            ]
+          },
+          "color": {
+            "control": "select",
+            "options": [
+              "default",
+              "primary",
+              "secondary",
+              "success",
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "size": {
+            "control": "select",
+            "options": [
+              "small",
+              "medium"
+            ]
+          },
+          "clickable": {
+            "control": "boolean"
+          },
+          "disabled": {
+            "control": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "kaze": "CustomTextField",
+      "as": "SearchField",
+      "source": "regenerated-tailwind",
+      "localPath": "src/components/tw/SearchField.tsx",
+      "spec": {
+        "name": "CustomTextField",
+        "category": "Form",
+        "story": "Components/Form/CustomTextField",
+        "storyFile": "src/stories/04-Components/Form/CustomTextField.stories.tsx",
+        "import": "@/components/Form/CustomTextField",
+        "description": "ツールチップ付きカスタムTextField。ラベル横に情報アイコンを表示し、ホバーで補足説明を提示する。",
+        "sizes": [
+          "small",
+          "medium"
+        ],
+        "accessibility": [
+          "aria-label",
+          "aria-required",
+          "aria-invalid",
+          "aria-describedby"
+        ],
+        "sample": "<CustomTextField label='名前' required placeholder='入力してください' />",
+        "props": {
+          "label": {
+            "control": "text"
+          },
+          "placeholder": {
+            "control": "text"
+          },
+          "required": {
+            "control": "boolean"
+          },
+          "error": {
+            "control": "boolean"
+          },
+          "tooltip": {
+            "control": "text"
+          },
+          "disabled": {
+            "control": "boolean"
+          },
+          "helperText": {
+            "control": "text"
+          },
+          "size": {
+            "control": "radio",
+            "options": [
+              "small",
+              "medium"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "kaze": "Select",
+      "as": "SortSelect",
+      "source": "regenerated-tailwind",
+      "localPath": "src/components/tw/SortSelect.tsx",
+      "spec": {
+        "name": "Select",
+        "category": "Form",
+        "story": "Components/Form/Select",
+        "storyFile": "src/stories/04-Components/Form/Select.stories.tsx",
+        "accessibility": [
+          "aria-label",
+          "aria-required",
+          "aria-invalid"
+        ],
+        "sample": "<CustomSelect label='都道府県' options={[{value:'tokyo',label:'東京'}]} />",
+        "props": {}
+      }
+    },
+    {
+      "kaze": "UserAvatar",
+      "as": "UserAvatar",
+      "source": "regenerated",
+      "localPath": "src/components/UserAvatar.tsx",
+      "spec": {
+        "name": "UserAvatar",
+        "category": "UI/Avatar",
+        "story": "Components/UI/Avatar/UserAvatar",
+        "storyFile": "src/stories/04-Components/UI/Avatar/UserAvatar.stories.tsx",
+        "import": "@/components/ui/avatar/userAvatar",
+        "variants": [
+          "circular",
+          "rounded",
+          "square"
+        ],
+        "sizes": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "accessibility": [
+          "alt text",
+          "aria-label"
+        ],
+        "props": {
+          "name": {
+            "control": "text"
+          },
+          "size": {
+            "control": "radio",
+            "options": [
+              "small",
+              "medium",
+              "large"
+            ]
+          },
+          "variant": {
+            "control": "radio",
+            "options": [
+              "circular",
+              "rounded",
+              "square"
+            ]
+          },
+          "color": {
+            "control": "select",
+            "options": [
+              "primary",
+              "secondary",
+              "success",
+              "error",
+              "warning",
+              "info"
+            ]
+          },
+          "src": {
+            "control": "text"
+          }
+        }
+      }
+    },
+    {
       "kaze": "ToggleButton",
+      "as": "SettlementToggle",
       "source": "regenerated",
       "localPath": "src/components/SettlementToggle.tsx",
       "spec": {

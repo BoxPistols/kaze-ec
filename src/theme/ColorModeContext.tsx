@@ -1,7 +1,15 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
 
+import { applyCssVars } from '@/theme/cssVars'
 import { createAppTheme, type ColorMode } from '@/theme/theme'
 
 interface ColorModeContextValue {
@@ -39,6 +47,11 @@ export const ColorModeProvider = ({ children }: { children: ReactNode }) => {
   )
 
   const theme = useMemo(() => createAppTheme(mode), [mode])
+
+  // Tailwind 側（CVA 部品）が参照する CSS 変数へテーマの値を流す
+  useEffect(() => {
+    applyCssVars(theme)
+  }, [theme])
 
   return (
     <ColorModeContext.Provider value={value}>

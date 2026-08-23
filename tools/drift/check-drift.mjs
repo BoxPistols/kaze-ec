@@ -38,6 +38,8 @@ const KAZE_UX_PATH = path.resolve(
 // （kaze-ux DESIGN.md の「Box/Grid/Stack/Typography は DS 対象外」と同じ扱い）。
 // CardContent / CardActionArea は Card の構造的な子であり独立した get_component
 // エントリを持たないため、Card 自体が宣言されていれば対象外とする。
+// ImageGallery は kaze MCP の search で image/gallery/carousel 系の DS 部品が
+// 存在しないことを確認済み — 「再実装」ではなく最初から DS 対象外の独自部品
 // ToggleButtonGroup / MuiToggleButton は意図的に含めない — SettlementToggle が
 // 再実装した ToggleButton 仕様そのものであり、画面から直接使われたら
 // SettlementToggle を経由していない = 無申告として検出したい
@@ -52,6 +54,7 @@ const LAYOUT_ALLOWLIST = new Set([
   'Toolbar',
   'CardContent',
   'CardActionArea',
+  'ImageGallery',
   'Table',
   'TableBody',
   'TableRow',

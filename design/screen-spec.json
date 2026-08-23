@@ -1,5 +1,5 @@
 {
-  "$description": "画面ごとに宣言する、kaze デザインシステムへの依存の単一ソース。手で書く（生成物ではない）。tools/drift/check-drift.mjs がここと実装ファイルを突き合わせてドリフトを検出する。componentsのsourceがmui のものは kaze MCP の get_component が import: '@mui/material' を返した部品（テーマだけ効かせて MUI をそのまま使う）。source が regenerated のものは import が kaze-ux 内部パス（例: '@/components/ui/toggle-button'）だったため、kaze-ec 側で props 仕様だけを見て再実装した部品。値の一致判定は例外なし — 白・黒などの中立色を含め、宣言済みトークンのどの値とも一致しないハードコード値はすべてドリフトとして報告する",
+  "$description": "画面ごとに宣言する、kaze デザインシステムへの依存の単一ソース。手で書く（生成物ではない）。tools/drift/check-drift.mjs がここと実装ファイルを突き合わせてドリフトを検出する。componentsのsourceがmui のものは kaze MCP の get_component が import: '@mui/material' を返した部品（テーマだけ効かせて MUI をそのまま使う）。source が regenerated のものは import が kaze-ux 内部パス（例: '@/components/ui/toggle-button'）だったため、kaze-ec 側で props 仕様だけを見て再実装した部品（MUI をベースに使う）。source が regenerated-tailwind のものは同じく再実装だが MUI をまったく使わず Tailwind + CVA で書いたもの — 「仕様（props 契約）と実装技術は分離できる」ことを示すために意図的にそうしている。値の一致判定は例外なし — 白・黒などの中立色を含め、宣言済みトークンのどの値とも一致しないハードコード値はすべてドリフトとして報告する",
   "foundations": [
     {
       "name": "theme.ts",
@@ -57,6 +57,24 @@
           "as": "AppIconButton",
           "source": "regenerated",
           "localPath": "src/components/AppIconButton.tsx"
+        },
+        {
+          "kaze": "Chip",
+          "as": "TagChip",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/TagChip.tsx"
+        },
+        {
+          "kaze": "CustomTextField",
+          "as": "SearchField",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/SearchField.tsx"
+        },
+        {
+          "kaze": "Select",
+          "as": "SortSelect",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/SortSelect.tsx"
         }
       ],
       "tokens": [
@@ -82,6 +100,12 @@
           "as": "AppIconButton",
           "source": "regenerated",
           "localPath": "src/components/AppIconButton.tsx"
+        },
+        {
+          "kaze": "Chip",
+          "as": "TagChip",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/TagChip.tsx"
         }
       ],
       "tokens": [
@@ -136,9 +160,27 @@
           "as": "SettlementToggle",
           "source": "regenerated",
           "localPath": "src/components/SettlementToggle.tsx"
+        },
+        {
+          "kaze": "Chip",
+          "as": "TagChip",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/TagChip.tsx"
+        },
+        {
+          "kaze": "CustomTextField",
+          "as": "SearchField",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/SearchField.tsx"
+        },
+        {
+          "kaze": "Select",
+          "as": "SortSelect",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/SortSelect.tsx"
         }
       ],
-      "tokens": []
+      "tokens": ["color.light.primary.main"]
     }
   ]
 }

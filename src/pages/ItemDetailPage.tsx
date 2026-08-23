@@ -10,6 +10,8 @@ import Typography from '@mui/material/Typography'
 import { alpha, useTheme } from '@mui/material/styles'
 
 import { AppIconButton } from '@/components/AppIconButton'
+import { ImageGallery } from '@/components/ImageGallery'
+import { TagChip } from '@/components/tw/TagChip'
 import { UserAvatar } from '@/components/UserAvatar'
 import { findListing, LISTINGS } from '@/data/listings'
 
@@ -49,14 +51,7 @@ export const ItemDetailPage = () => {
 
       <Grid container spacing={{ xs: 3, sm: 4 }} sx={{ mt: 0.5 }}>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <Box
-            sx={{
-              height: 320,
-              borderRadius: 1.5,
-              backgroundImage: `linear-gradient(155deg, ${listing.swatch} 0%, ${alpha(listing.swatch, 0.6)} 100%)`,
-            }}
-            aria-hidden
-          />
+          <ImageGallery swatch={listing.swatch} count={listing.imageCount} alt={listing.title} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <Box sx={{ display: 'flex', gap: 0.75, mb: 1.5, flexWrap: 'wrap' }}>
@@ -80,8 +75,18 @@ export const ItemDetailPage = () => {
               （税込）送料込み
             </Typography>
           </Box>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.8 }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2, lineHeight: 1.8 }}>
             {listing.description}
+          </Typography>
+
+          <div className="mb-3 flex flex-wrap gap-1.5">
+            {listing.tags.map((tag) => (
+              <TagChip key={tag} label={`#${tag}`} variant="outlined" size="small" />
+            ))}
+          </div>
+
+          <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', mb: 2 }}>
+            ♡ {listing.likeCount} ・ 出品日 {listing.listedAt}
           </Typography>
 
           <Divider sx={{ mb: 2 }} />

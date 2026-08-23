@@ -48,7 +48,11 @@ const main = async () => {
   const seen = new Map()
   for (const screen of spec.screens) {
     for (const component of screen.components ?? []) {
-      if (!seen.has(component.kaze)) seen.set(component.kaze, component)
+      // 同じ kaze 仕様に対して実装が複数ありうる（例: Chip → MUI 直使用の
+      // Chip と Tailwind 実装の TagChip）。カタログはその対比こそ見せたいので、
+      // kaze 名ではなく「kaze 名 + 実装名」で一意にする
+      const key = `${component.kaze}::${component.as}`
+      if (!seen.has(key)) seen.set(key, component)
     }
   }
 
@@ -65,12 +69,14 @@ const main = async () => {
       path: RADIUS_PATH,
     })
 
-    for (const [kazeName, declared] of seen) {
+    for (const declared of seen.values()) {
+      const kazeName = declared.kaze
       const componentSpec = await client.callTool('get_component', {
         name: kazeName.charAt(0).toLowerCase() + kazeName.slice(1),
       })
       components.push({
         kaze: kazeName,
+        as: declared.as,
         source: declared.source,
         localPath: declared.localPath ?? null,
         spec: componentSpec,

@@ -13,7 +13,17 @@
 ## コマンド
 
 `pnpm dev` / `pnpm build` / `pnpm test` / `pnpm lint` /
-`node tools/drift/check-drift.mjs`
+`node tools/drift/check-drift.mjs` / `pnpm catalog:generate`
+
+## Skill / SubAgent / Hook
+
+- 新しい画面を作るときは `/kaze-ec-new-screen` に従う（仕様ファースト）
+- 画面のドリフトを確認したいときは `/kaze-ec-screen-review`
+- `/components` の生成物を更新したいときは `/kaze-ec-catalog-sync`
+- 大きな UI 差分は `kaze-ec-design-reviewer` SubAgent に自動委譲される
+- `src/pages/**` / `src/theme/**` への Write・Edit は Hook
+  （`.claude/settings.json`）が `check-drift.mjs` を自動実行し、
+  違反があればその場で差し戻す
 
 ## 詳細
 

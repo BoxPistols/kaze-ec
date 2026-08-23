@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined'
 import { Link } from 'react-router-dom'
@@ -14,7 +15,11 @@ import Typography from '@mui/material/Typography'
 import { alpha, useTheme } from '@mui/material/styles'
 
 import { AppIconButton } from '@/components/AppIconButton'
-import { LISTINGS, type Listing } from '@/data/listings'
+import { SearchField } from '@/components/tw/SearchField'
+import { SortSelect } from '@/components/tw/SortSelect'
+import { TagChip } from '@/components/tw/TagChip'
+import { ALL_TAGS, CATEGORIES, LISTINGS, type Listing } from '@/data/listings'
+import { SORT_OPTIONS, useListingFilters } from '@/hooks/useListingFilters'
 
 const CONTAINER_SX = {
   maxWidth: 'lg' as const,
@@ -68,6 +73,26 @@ const ListingCard = ({ listing }: { listing: Listing }) => {
             pointerEvents: 'none',
           }}
         />
+        {listing.imageCount > 1 && (
+          <Chip
+            icon={
+              <CollectionsOutlinedIcon
+                sx={{ color: `${theme.palette.common.white} !important`, fontSize: 15 }}
+              />
+            }
+            label={listing.imageCount}
+            size="small"
+            sx={{
+              position: 'absolute',
+              right: 10,
+              bottom: 10,
+              bgcolor: alpha(theme.palette.common.black, 0.6),
+              color: theme.palette.common.white,
+              fontWeight: 700,
+              pointerEvents: 'none',
+            }}
+          />
+        )}
         <Box sx={{ position: 'absolute', top: 6, right: 6 }}>
           <AppIconButton
             tooltip={favorited ? 'お気に入りから外す' : 'お気に入りに追加'}
@@ -80,7 +105,10 @@ const ListingCard = ({ listing }: { listing: Listing }) => {
             {favorited ? (
               <FavoriteOutlinedIcon fontSize="small" />
             ) : (
-              <FavoriteBorderOutlinedIcon fontSize="small" sx={{ color: theme.palette.common.white }} />
+              <FavoriteBorderOutlinedIcon
+                fontSize="small"
+                sx={{ color: theme.palette.common.white }}
+              />
             )}
           </AppIconButton>
         </Box>
@@ -96,32 +124,122 @@ const ListingCard = ({ listing }: { listing: Listing }) => {
           <Typography variant="subtitle1" sx={{ fontWeight: 600, lineHeight: 1.35 }}>
             {listing.title}
           </Typography>
+          <Box sx={{ display: 'flex', gap: 0.5, mt: 1, flexWrap: 'wrap' }}>
+            {listing.tags.map((tag) => (
+              <TagChip key={tag} label={`#${tag}`} variant="outlined" size="small" />
+            ))}
+          </Box>
         </CardContent>
       </CardActionArea>
     </Card>
   )
 }
 
-export const ItemListPage = () => (
-  <Container sx={CONTAINER_SX}>
-    <Typography
-      variant="h5"
-      component="h1"
-      sx={{ mb: { xs: 3, md: 4 }, fontWeight: 800, letterSpacing: '-0.01em' }}
-    >
-      出品一覧
-    </Typography>
-    <Grid container spacing={{ xs: 2.5, md: 3 }}>
-      {LISTINGS.map((listing) => (
-        <Grid key={listing.id} size={{ xs: 12, sm: 6, md: 4 }}>
-          <ListingCard listing={listing} />
+export const ItemListPage = () => {
+  const {
+    filters,
+    results,
+    isFiltered,
+    setKeyword,
+    setSort,
+    toggleCategory,
+    toggleTag,
+    toggleStablecoinOnly,
+    reset,
+  } = useListingFilters(LISTINGS)
+
+  return (
+    <Container sx={CONTAINER_SX}>
+      <Typography
+        variant="h5"
+        component="h1"
+        sx={{ mb: { xs: 2, md: 3 }, fontWeight: 800, letterSpacing: '-0.01em' }}
+      >
+        出品一覧
+      </Typography>
+
+      {/* 検索・並び替え・絞り込みは Tailwind + CVA 実装（MUI を使わない） */}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+        <SearchField
+          label="キーワード検索"
+          value={filters.keyword}
+          onChange={setKeyword}
+          placeholder="商品名・説明・タグから探す"
+          className="flex-1"
+        />
+        <SortSelect
+          label="並び替え"
+          value={filters.sort}
+          options={SORT_OPTIONS}
+          onChange={setSort}
+          className="sm:w-48"
+        />
+      </div>
+
+      <div className="mb-2 flex flex-wrap gap-1.5">
+        {CATEGORIES.map((category) => (
+          <TagChip
+            key={category}
+            label={category}
+            color="primary"
+            variant={filters.category === category ? 'filled' : 'outlined'}
+            selected={filters.category === category}
+            onClick={() => toggleCategory(category)}
+          />
+        ))}
+        <TagChip
+          label="暗号資産可のみ"
+          color="success"
+          variant={filters.stablecoinOnly ? 'filled' : 'outlined'}
+          selected={filters.stablecoinOnly}
+          onClick={toggleStablecoinOnly}
+        />
+      </div>
+
+      <div className="mb-4 flex flex-wrap gap-1.5">
+        {ALL_TAGS.map((tag) => (
+          <TagChip
+            key={tag}
+            label={`#${tag}`}
+            variant={filters.tags.includes(tag) ? 'filled' : 'outlined'}
+            selected={filters.tags.includes(tag)}
+            onClick={() => toggleTag(tag)}
+          />
+        ))}
+      </div>
+
+      <Box
+        sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5, flexWrap: 'wrap' }}
+      >
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          {results.length} 件
+          {isFiltered && ` / 全 ${LISTINGS.length} 件`}
+        </Typography>
+        {isFiltered && (
+          <Button size="small" variant="text" onClick={reset}>
+            条件をクリア
+          </Button>
+        )}
+      </Box>
+
+      {results.length === 0 ? (
+        <Box sx={{ py: 6, textAlign: 'center' }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+            条件に合う商品が見つかりませんでした。
+          </Typography>
+          <Button variant="outlined" size="medium" onClick={reset}>
+            条件をクリア
+          </Button>
+        </Box>
+      ) : (
+        <Grid container spacing={{ xs: 2.5, md: 3 }}>
+          {results.map((listing) => (
+            <Grid key={listing.id} size={{ xs: 12, sm: 6, md: 4 }}>
+              <ListingCard listing={listing} />
+            </Grid>
+          ))}
         </Grid>
-      ))}
-    </Grid>
-    <Box sx={{ mt: 4 }}>
-      <Button variant="outlined" size="medium" disabled>
-        もっと見る（デモデータのみ）
-      </Button>
-    </Box>
-  </Container>
-)
+      )}
+    </Container>
+  )
+}
