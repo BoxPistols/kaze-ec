@@ -34,6 +34,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
         working-directory: kaze-ec
 
+      # mcp/src/index.ts が @modelcontextprotocol/sdk を解決できるように、
+      # checkout しただけの kaze-ux 側にも依存を入れる（ビルドは不要）
+      - run: pnpm install --frozen-lockfile
+        working-directory: kaze-ux
+
       - name: ドリフト検出
         working-directory: kaze-ec
         env:
