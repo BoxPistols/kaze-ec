@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "kaze": {
+      "command": "npx",
+      "args": ["-y", "tsx", "${KAZE_UX_PATH:-../kaze-ux}/mcp/src/index.ts"],
+      "env": {
+        "DS_ROOT": "${KAZE_UX_PATH:-../kaze-ux}"
+      }
+    }
+  }
+}
