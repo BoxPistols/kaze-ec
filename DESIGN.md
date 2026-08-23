@@ -91,6 +91,17 @@ kaze-ux 自身が機械検査していない範囲を、消費側であるここ
 - CI（`.github/workflows/drift-check.yml`）は PR ごとに `BoxPistols/kaze-ux`
   を checkout し、その時点の仕様と比較する
 
+## 4.5 Figma（code → design）
+
+実装済みの 3 画面から、Figma Plugin API（`use_figma`）で code → design 方向に
+フレームを生成した: [kaze-ec — 3 screens](https://www.figma.com/design/9ztuT70cTV8eZot8P02Rlp)。
+
+実装のトークン・レイアウトをそのまま Figma のノードに落としている
+（色は `src/theme/theme.ts` / スペーシングは `screen-spec.json` の
+宣言と同じ値）。design → code（Figma を起点にコードを書く）は本リポジトリの
+主眼ではなく、実装が既に kaze MCP から仕様を引いて成立しているため、
+ここでは逆方向（実装の忠実な可視化）だけを扱った。
+
 ## 5. Skill（デザイナーの入口）
 
 `.claude/skills/kaze-ec-screen-review/` — `/kaze-ec-screen-review <画面名>`
