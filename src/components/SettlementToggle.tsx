@@ -1,3 +1,5 @@
+import CurrencyYenOutlinedIcon from '@mui/icons-material/CurrencyYenOutlined'
+import ToggleOnOutlinedIcon from '@mui/icons-material/ToggleOnOutlined'
 import MuiToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 
@@ -39,8 +41,16 @@ export const SettlementToggle = ({
       if (next) onChange(next)
     }}
     aria-label="支払い原資"
+    sx={{
+      '& .MuiToggleButton-root': {
+        gap: 0.75,
+        py: 1.1,
+        fontWeight: 700,
+      },
+    }}
   >
     <MuiToggleButton value="jpy" aria-label="円残高で支払う">
+      <CurrencyYenOutlinedIcon fontSize="small" />
       円残高
     </MuiToggleButton>
     <MuiToggleButton
@@ -48,6 +58,7 @@ export const SettlementToggle = ({
       disabled={stablecoinDisabled}
       aria-label="ステーブルコイン残高で支払う"
     >
+      <ToggleOnOutlinedIcon fontSize="small" />
       ステーブルコイン残高
     </MuiToggleButton>
   </ToggleButtonGroup>

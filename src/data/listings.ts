@@ -13,7 +13,7 @@ export interface Listing {
 export const LISTINGS: Listing[] = [
   {
     id: 'l-001',
-    title: 'フィルムカメラ Olympus PEN EE-3',
+    title: 'フィルムカメラ Vintra PEN-7',
     price: 8200,
     condition: '未使用に近い',
     category: 'カメラ',

@@ -52,6 +52,10 @@ const LAYOUT_ALLOWLIST = new Set([
   'Toolbar',
   'CardContent',
   'CardActionArea',
+  'Table',
+  'TableBody',
+  'TableRow',
+  'TableCell',
   'Link',
   'Route',
   'Routes',
@@ -79,16 +83,51 @@ const extractJsxComponentNames = (filePath, sourceText) => {
   return names
 }
 
+// ファイル内で const X = (...) => ... / function X(...) として定義された
+// コンポーネント名。DS への外部依存ではなく画面内のローカル合成なので、
+// 「無申告」の対象から外す
+const extractLocallyDeclaredNames = (filePath, sourceText) => {
+  const source = ts.createSourceFile(
+    filePath,
+    sourceText,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX
+  )
+  const names = new Set()
+  const visit = (node) => {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      /^[A-Z]/.test(node.name.text)
+    ) {
+      names.add(node.name.text)
+    }
+    if (ts.isFunctionDeclaration(node) && node.name && /^[A-Z]/.test(node.name.text)) {
+      names.add(node.name.text)
+    }
+    ts.forEachChild(node, visit)
+  }
+  visit(source)
+  return names
+}
+
 const extractLiteralValues = (sourceText) => {
   const hexes = [...sourceText.matchAll(/#[0-9a-fA-F]{3,8}\b/g)].map(
     (m) => m[0]
   )
-  // sx={{ borderRadius: '12px' }}（引用符あり）と theme.shape.borderRadius: 8
-  // （引用符なしの数値、単位は px 前提）の両方を拾い、'8' → '8px' に正規化する
-  const radii = [
-    ...sourceText.matchAll(/borderRadius:\s*'?(\d+)(?:px)?'?/g),
+  // sx={{ borderRadius: '12px' }} のような絶対値（引用符付き文字列）だけを拾う。
+  // sx={{ borderRadius: 1.5 }} のような単位無し数値は theme.shape.borderRadius
+  // の倍数（相対値）で、それ自体は決してドリフトしない値なので対象外にする
+  const quotedRadii = [
+    ...sourceText.matchAll(/borderRadius:\s*'(\d+px)'/g),
+  ].map((m) => m[1])
+  // theme の shape.borderRadius: 8 は絶対値（単位無し = px 前提）。
+  // shape ブロック内に限定することで sx の相対倍数と区別する
+  const shapeRadii = [
+    ...sourceText.matchAll(/shape:\s*{\s*borderRadius:\s*(\d+)/g),
   ].map((m) => `${m[1]}px`)
-  return { hexes, radii }
+  return { hexes, radii: [...quotedRadii, ...shapeRadii] }
 }
 
 const collectAllowedTokenValues = async (client, tokenPaths) => {
@@ -139,6 +178,7 @@ const checkScreen = async (client, screen) => {
   if (screen.components) {
     const usedNames = extractJsxComponentNames(filePath, sourceText)
     const declaredNames = new Set(screen.components.map((c) => c.as))
+    const locallyDeclared = extractLocallyDeclaredNames(filePath, sourceText)
 
     for (const name of declaredNames) {
       if (!usedNames.has(name)) {
@@ -150,6 +190,10 @@ const checkScreen = async (client, screen) => {
     }
 
     for (const name of usedNames) {
+      // MUI アイコン（*Icon サフィックス）は kaze の metadata/components.json
+      // で個別追跡されていない — 一つずつ宣言させると spec が肥大化するだけ
+      if (name.endsWith('Icon')) continue
+      if (locallyDeclared.has(name)) continue
       if (!declaredNames.has(name) && !LAYOUT_ALLOWLIST.has(name)) {
         findings.push({
           type: '無申告',

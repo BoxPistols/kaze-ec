@@ -1,0 +1,402 @@
+{
+  "$description": "生成物。手で編集しない（node tools/catalog/generate-catalog.mjs）。kaze-mcp（kaze-ux 本体）から取得した、このリポジトリで実際に使っているコンポーネントとトークンのスナップショット",
+  "tokens": {
+    "colors": {
+      "primary": {
+        "$value": "#0057B8",
+        "$type": "color"
+      },
+      "secondary": {
+        "$value": "#696881",
+        "$type": "color"
+      },
+      "success": {
+        "$value": "#46ab4a",
+        "$type": "color"
+      },
+      "warning": {
+        "$value": "#eb8117",
+        "$type": "color"
+      },
+      "error": {
+        "$value": "#da3737",
+        "$type": "color"
+      }
+    },
+    "borderRadius": {
+      "xs": {
+        "$value": "4px",
+        "$type": "dimension",
+        "$description": "Chip, Badge"
+      },
+      "sm": {
+        "$value": "6px",
+        "$type": "dimension",
+        "$description": "Button, Menu, Tooltip"
+      },
+      "md": {
+        "$value": "8px",
+        "$type": "dimension",
+        "$description": "Default (IconButton, Skeleton)"
+      },
+      "lg": {
+        "$value": "10px",
+        "$type": "dimension",
+        "$description": "Alert"
+      },
+      "xl": {
+        "$value": "12px",
+        "$type": "dimension",
+        "$description": "Card, Paper, TableContainer"
+      },
+      "2xl": {
+        "$value": "16px",
+        "$type": "dimension",
+        "$description": "Dialog"
+      },
+      "full": {
+        "$value": "9999px",
+        "$type": "dimension",
+        "$description": "完全な丸"
+      }
+    }
+  },
+  "components": [
+    {
+      "kaze": "Card",
+      "source": "mui",
+      "localPath": null,
+      "spec": {
+        "name": "Card",
+        "category": "UI/Card",
+        "story": "Components/UI/Card/Card",
+        "storyFile": "src/stories/04-Components/UI/Card/Card.stories.tsx",
+        "import": "@mui/material",
+        "variants": [
+          "elevation",
+          "outlined"
+        ],
+        "props": {
+          "variant": {
+            "control": "select",
+            "options": [
+              "elevation",
+              "outlined"
+            ],
+            "description": "カードのバリアント"
+          },
+          "square": {
+            "control": "boolean",
+            "description": "角丸を無効化"
+          }
+        }
+      }
+    },
+    {
+      "kaze": "Chip",
+      "source": "mui",
+      "localPath": null,
+      "spec": {
+        "name": "Chip",
+        "category": "UI",
+        "story": "Components/UI/Chip",
+        "storyFile": "src/stories/04-Components/UI/Chip/Chip.stories.tsx",
+        "import": "@mui/material",
+        "variants": [
+          "filled",
+          "outlined"
+        ],
+        "sizes": [
+          "small",
+          "medium"
+        ],
+        "props": {
+          "label": {
+            "control": "text"
+          },
+          "variant": {
+            "control": "select",
+            "options": [
+              "filled",
+              "outlined"
+            ]
+          },
+          "color": {
+            "control": "select",
+            "options": [
+              "default",
+              "primary",
+              "secondary",
+              "success",
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "size": {
+            "control": "select",
+            "options": [
+              "small",
+              "medium"
+            ]
+          },
+          "clickable": {
+            "control": "boolean"
+          },
+          "disabled": {
+            "control": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "kaze": "Button",
+      "source": "mui",
+      "localPath": null,
+      "spec": {
+        "name": "Button",
+        "category": "UI/Button",
+        "story": "Components/UI/Button/Button",
+        "storyFile": "src/stories/04-Components/UI/Button/Button.stories.tsx",
+        "import": "@mui/material",
+        "description": "MUI Buttonコンポーネント。contained / outlined / text の3バリアント、6カラー、3サイズをテーマカスタマイズ付きで表示する。",
+        "variants": [
+          "contained",
+          "outlined",
+          "text"
+        ],
+        "sizes": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "props": {
+          "variant": {
+            "control": "select",
+            "options": [
+              "contained",
+              "outlined",
+              "text"
+            ]
+          },
+          "color": {
+            "control": "select",
+            "options": [
+              "inherit",
+              "primary",
+              "secondary",
+              "error",
+              "warning",
+              "info",
+              "success"
+            ]
+          },
+          "size": {
+            "control": "select",
+            "options": [
+              "small",
+              "medium",
+              "large"
+            ]
+          },
+          "disabled": {
+            "control": "boolean"
+          },
+          "fullWidth": {
+            "control": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "kaze": "UserAvatar",
+      "source": "regenerated",
+      "localPath": "src/components/UserAvatar.tsx",
+      "spec": {
+        "name": "UserAvatar",
+        "category": "UI/Avatar",
+        "story": "Components/UI/Avatar/UserAvatar",
+        "storyFile": "src/stories/04-Components/UI/Avatar/UserAvatar.stories.tsx",
+        "import": "@/components/ui/avatar/userAvatar",
+        "variants": [
+          "circular",
+          "rounded",
+          "square"
+        ],
+        "sizes": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "accessibility": [
+          "alt text",
+          "aria-label"
+        ],
+        "props": {
+          "name": {
+            "control": "text"
+          },
+          "size": {
+            "control": "radio",
+            "options": [
+              "small",
+              "medium",
+              "large"
+            ]
+          },
+          "variant": {
+            "control": "radio",
+            "options": [
+              "circular",
+              "rounded",
+              "square"
+            ]
+          },
+          "color": {
+            "control": "select",
+            "options": [
+              "primary",
+              "secondary",
+              "success",
+              "error",
+              "warning",
+              "info"
+            ]
+          },
+          "src": {
+            "control": "text"
+          }
+        }
+      }
+    },
+    {
+      "kaze": "IconButton",
+      "source": "regenerated",
+      "localPath": "src/components/AppIconButton.tsx",
+      "spec": {
+        "name": "IconButton",
+        "category": "UI/Button",
+        "story": "Components/UI/Button/IconButton",
+        "storyFile": "src/stories/04-Components/UI/Button/IconButton.stories.tsx",
+        "import": "@/components/ui/icon-button",
+        "description": "カスタムIconButtonコンポーネント。default/outlined/filled/ghost の4バリアント、ローディング、アクティブ状態、ツールチップに対応。",
+        "variants": [
+          "default",
+          "outlined",
+          "filled",
+          "ghost"
+        ],
+        "sizes": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "accessibility": [
+          "aria-label必須",
+          "aria-busy",
+          "tooltip"
+        ],
+        "sample": "<IconButton tooltip='Edit' aria-label='Edit'><EditIcon /></IconButton>",
+        "props": {
+          "variant": {
+            "control": "select",
+            "options": [
+              "default",
+              "outlined",
+              "filled",
+              "ghost"
+            ]
+          },
+          "color": {
+            "control": "select",
+            "options": [
+              "primary",
+              "secondary",
+              "error",
+              "warning",
+              "info",
+              "success",
+              "inherit"
+            ]
+          },
+          "size": {
+            "control": "select",
+            "options": [
+              "small",
+              "medium",
+              "large"
+            ]
+          },
+          "loading": {
+            "control": "boolean"
+          },
+          "active": {
+            "control": "boolean"
+          },
+          "disabled": {
+            "control": "boolean"
+          },
+          "tooltip": {
+            "control": "text"
+          }
+        }
+      }
+    },
+    {
+      "kaze": "ToggleButton",
+      "source": "regenerated",
+      "localPath": "src/components/SettlementToggle.tsx",
+      "spec": {
+        "name": "ToggleButton",
+        "category": "UI/Button",
+        "story": "Components/UI/Button/ToggleButton",
+        "storyFile": "src/stories/04-Components/UI/Button/ToggleButton.stories.tsx",
+        "import": "@/components/ui/toggle-button",
+        "description": "トグルボタングループ。排他的選択(exclusive)と複数選択に対応。アイコン、ラベル、水平/垂直レイアウトをサポート。",
+        "sizes": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "props": {
+          "color": {
+            "control": "select",
+            "options": [
+              "primary",
+              "secondary",
+              "error",
+              "warning",
+              "info",
+              "success",
+              "standard"
+            ]
+          },
+          "size": {
+            "control": "select",
+            "options": [
+              "small",
+              "medium",
+              "large"
+            ]
+          },
+          "exclusive": {
+            "control": "boolean"
+          },
+          "disabled": {
+            "control": "boolean"
+          },
+          "fullWidth": {
+            "control": "boolean"
+          },
+          "orientation": {
+            "control": "select",
+            "options": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
