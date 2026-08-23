@@ -1,5 +1,18 @@
 {
-  "$description": "画面ごとに宣言する、kaze デザインシステムへの依存の単一ソース。手で書く（生成物ではない）。tools/drift/check-drift.mjs がここと実装ファイルを突き合わせてドリフトを検出する。componentsのsourceがmui のものは kaze MCP の get_component が import: '@mui/material' を返した部品（テーマだけ効かせて MUI をそのまま使う）。source が regenerated のものは import が kaze-ux 内部パス（例: '@/components/ui/toggle-button'）だったため、kaze-ec 側で props 仕様だけを見て再実装した部品",
+  "$description": "画面ごとに宣言する、kaze デザインシステムへの依存の単一ソース。手で書く（生成物ではない）。tools/drift/check-drift.mjs がここと実装ファイルを突き合わせてドリフトを検出する。componentsのsourceがmui のものは kaze MCP の get_component が import: '@mui/material' を返した部品（テーマだけ効かせて MUI をそのまま使う）。source が regenerated のものは import が kaze-ux 内部パス（例: '@/components/ui/toggle-button'）だったため、kaze-ec 側で props 仕様だけを見て再実装した部品。値の一致判定は例外なし — 白・黒などの中立色を含め、宣言済みトークンのどの値とも一致しないハードコード値はすべてドリフトとして報告する",
+  "foundations": [
+    {
+      "name": "theme.ts",
+      "path": "src/theme/theme.ts",
+      "tokens": [
+        "color.light.primary.main",
+        "color.light.secondary.main",
+        "color.light.success.main",
+        "color.light.warning.main",
+        "borderRadius.md"
+      ]
+    }
+  ],
   "screens": [
     {
       "name": "ItemListPage",

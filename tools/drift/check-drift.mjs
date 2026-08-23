@@ -15,6 +15,11 @@
  * ここで見るのは「宣言した仕様と実装が食い違っていないか」で、そちらは
  * kaze-ux の prohibited.md で K01（ハードコード色値）が「強制: なし」と
  * 明記されている領域にまで踏み込む
+ *
+ * screen-spec.json の screens[] は画面（JSX 有り、未実装/無申告も見る）、
+ * foundations[] は src/theme/theme.ts のような設定ファイル（JSX 無し、
+ * 値の一致だけを見る）。MUI のテーマは実行時に MCP を呼べないので値自体は
+ * コードに残るが、foundations に登録することで CI が毎回それを検証する
  */
 import { readFileSync } from 'node:fs'
 import { existsSync } from 'node:fs'
@@ -30,7 +35,12 @@ const KAZE_UX_PATH = path.resolve(
 )
 
 // 画面固有のレイアウト原始要素。DS 仕様との対応を宣言しなくてよい
-// （kaze-ux DESIGN.md の「Box/Grid/Stack/Typography は DS 対象外」と同じ扱い）
+// （kaze-ux DESIGN.md の「Box/Grid/Stack/Typography は DS 対象外」と同じ扱い）。
+// CardContent / CardActionArea は Card の構造的な子であり独立した get_component
+// エントリを持たないため、Card 自体が宣言されていれば対象外とする。
+// ToggleButtonGroup / MuiToggleButton は意図的に含めない — SettlementToggle が
+// 再実装した ToggleButton 仕様そのものであり、画面から直接使われたら
+// SettlementToggle を経由していない = 無申告として検出したい
 const LAYOUT_ALLOWLIST = new Set([
   'Box',
   'Container',
@@ -42,8 +52,6 @@ const LAYOUT_ALLOWLIST = new Set([
   'Toolbar',
   'CardContent',
   'CardActionArea',
-  'ToggleButtonGroup',
-  'MuiToggleButton',
   'Link',
   'Route',
   'Routes',
@@ -75,9 +83,11 @@ const extractLiteralValues = (sourceText) => {
   const hexes = [...sourceText.matchAll(/#[0-9a-fA-F]{3,8}\b/g)].map(
     (m) => m[0]
   )
+  // sx={{ borderRadius: '12px' }}（引用符あり）と theme.shape.borderRadius: 8
+  // （引用符なしの数値、単位は px 前提）の両方を拾い、'8' → '8px' に正規化する
   const radii = [
-    ...sourceText.matchAll(/borderRadius:\s*'([^']+)'/g),
-  ].map((m) => m[1])
+    ...sourceText.matchAll(/borderRadius:\s*'?(\d+)(?:px)?'?/g),
+  ].map((m) => `${m[1]}px`)
   return { hexes, radii }
 }
 
@@ -122,24 +132,30 @@ const checkScreen = async (client, screen) => {
   }
 
   const sourceText = readFileSync(filePath, 'utf8')
-  const usedNames = extractJsxComponentNames(filePath, sourceText)
-  const declaredNames = new Set(screen.components.map((c) => c.as))
 
-  for (const name of declaredNames) {
-    if (!usedNames.has(name)) {
-      findings.push({
-        type: '未実装',
-        detail: `${screen.name}: 宣言済みの ${name} が実装に現れない`,
-      })
+  // foundations エントリ（例: theme.ts）は JSX を持たないコンポーネント宣言不要の
+  // 設定ファイル。components が無ければ未実装/無申告チェックはスキップし、
+  // トークン値の一致だけを見る
+  if (screen.components) {
+    const usedNames = extractJsxComponentNames(filePath, sourceText)
+    const declaredNames = new Set(screen.components.map((c) => c.as))
+
+    for (const name of declaredNames) {
+      if (!usedNames.has(name)) {
+        findings.push({
+          type: '未実装',
+          detail: `${screen.name}: 宣言済みの ${name} が実装に現れない`,
+        })
+      }
     }
-  }
 
-  for (const name of usedNames) {
-    if (!declaredNames.has(name) && !LAYOUT_ALLOWLIST.has(name)) {
-      findings.push({
-        type: '無申告',
-        detail: `${screen.name}: ${name} が screen-spec.json に未宣言のまま使われている`,
-      })
+    for (const name of usedNames) {
+      if (!declaredNames.has(name) && !LAYOUT_ALLOWLIST.has(name)) {
+        findings.push({
+          type: '無申告',
+          detail: `${screen.name}: ${name} が screen-spec.json に未宣言のまま使われている`,
+        })
+      }
     }
   }
 
@@ -196,8 +212,8 @@ const main = async () => {
 
   const allFindings = []
   try {
-    for (const screen of spec.screens) {
-      const findings = await checkScreen(client, screen)
+    for (const entry of [...spec.screens, ...(spec.foundations ?? [])]) {
+      const findings = await checkScreen(client, entry)
       allFindings.push(...findings)
     }
   } finally {

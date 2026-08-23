@@ -6,7 +6,6 @@ import { ThemeProvider } from '@mui/material/styles'
 
 import { App } from '@/App'
 import { theme } from '@/theme/theme'
-import '@/index.css'
 
 const container = document.getElementById('root')
 if (!container) throw new Error('root element not found')
