@@ -283,17 +283,19 @@ const OkPanel = ({ result }: { result: Extract<AnalysisResult, { status: 'ok' }>
 
     <SectionTitle>前提・限界・次にやること</SectionTitle>
     <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' } }}>
+      {/* 見出しが 3 つとも別語なので、色で区別する必要が無い。
+          角丸カードの一辺だけを太くするアクセントは使わない */}
       {(
         [
-          ['この推定が成り立つ前提', result.assumptions, 'primary.main'],
-          ['言えないこと', result.limitations, 'warning.main'],
-          ['次にやること', result.nextSteps, 'success.main'],
+          ['この推定が成り立つ前提', result.assumptions],
+          ['言えないこと', result.limitations],
+          ['次にやること', result.nextSteps],
         ] as const
-      ).map(([title, items, color]) => (
+      ).map(([title, items]) => (
         <Card
           key={title}
           variant="outlined"
-          sx={{ borderRadius: 1.5, borderColor: 'divider', borderTop: 3, borderTopColor: color }}
+          sx={{ borderRadius: 1.5, borderColor: 'divider' }}
         >
           <CardContent>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
