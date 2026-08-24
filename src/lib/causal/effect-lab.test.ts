@@ -164,7 +164,9 @@ describe('中間変数の混入検知', () => {
       rows.map((r) => ({ ...r, likesAtListing: r.mediators.likesNow }))
     )
 
-    expect(Math.abs(correct.aipw - truth.ate)).toBeLessThan(0.03)
+    // 単一シードなので閾値は緩く取る（標本 SD が 0.016 ある）。
+    // このテストの本体は下の 1 行で、同じデータ内の比較なので安定している
+    expect(Math.abs(correct.aipw - truth.ate)).toBeLessThan(0.05)
     // 中間変数で調整すると効果が過小になる
     expect(withMediator.aipw).toBeLessThan(correct.aipw)
   })

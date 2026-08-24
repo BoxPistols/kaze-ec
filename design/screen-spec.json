@@ -49,9 +49,21 @@
       "name": "ItemListPage",
       "path": "src/pages/ItemListPage.tsx",
       "components": [
-        { "kaze": "Card", "as": "Card", "source": "mui" },
-        { "kaze": "Chip", "as": "Chip", "source": "mui" },
-        { "kaze": "Button", "as": "Button", "source": "mui" },
+        {
+          "kaze": "Card",
+          "as": "Card",
+          "source": "mui"
+        },
+        {
+          "kaze": "Chip",
+          "as": "Chip",
+          "source": "mui"
+        },
+        {
+          "kaze": "Button",
+          "as": "Button",
+          "source": "mui"
+        },
         {
           "kaze": "IconButton",
           "as": "AppIconButton",
@@ -87,8 +99,16 @@
       "name": "ItemDetailPage",
       "path": "src/pages/ItemDetailPage.tsx",
       "components": [
-        { "kaze": "Chip", "as": "Chip", "source": "mui" },
-        { "kaze": "Button", "as": "Button", "source": "mui" },
+        {
+          "kaze": "Chip",
+          "as": "Chip",
+          "source": "mui"
+        },
+        {
+          "kaze": "Button",
+          "as": "Button",
+          "source": "mui"
+        },
         {
           "kaze": "UserAvatar",
           "as": "UserAvatar",
@@ -118,9 +138,21 @@
       "name": "CheckoutWalletPage",
       "path": "src/pages/CheckoutWalletPage.tsx",
       "components": [
-        { "kaze": "Card", "as": "Card", "source": "mui" },
-        { "kaze": "Chip", "as": "Chip", "source": "mui" },
-        { "kaze": "Button", "as": "Button", "source": "mui" },
+        {
+          "kaze": "Card",
+          "as": "Card",
+          "source": "mui"
+        },
+        {
+          "kaze": "Chip",
+          "as": "Chip",
+          "source": "mui"
+        },
+        {
+          "kaze": "Button",
+          "as": "Button",
+          "source": "mui"
+        },
         {
           "kaze": "ToggleButton",
           "as": "SettlementToggle",
@@ -140,9 +172,21 @@
       "name": "ComponentCatalogPage",
       "path": "src/pages/ComponentCatalogPage.tsx",
       "components": [
-        { "kaze": "Card", "as": "Card", "source": "mui" },
-        { "kaze": "Chip", "as": "Chip", "source": "mui" },
-        { "kaze": "Button", "as": "Button", "source": "mui" },
+        {
+          "kaze": "Card",
+          "as": "Card",
+          "source": "mui"
+        },
+        {
+          "kaze": "Chip",
+          "as": "Chip",
+          "source": "mui"
+        },
+        {
+          "kaze": "Button",
+          "as": "Button",
+          "source": "mui"
+        },
         {
           "kaze": "UserAvatar",
           "as": "UserAvatar",
@@ -180,17 +224,35 @@
           "localPath": "src/components/tw/SortSelect.tsx"
         }
       ],
-      "tokens": ["color.light.primary.main"]
+      "tokens": [
+        "color.light.primary.main"
+      ]
     },
     {
       "name": "MyPage",
       "path": "src/pages/MyPage.tsx",
       "journey": "購入 8（振り返り）/ 出品 5（観察）。design/decisions/0002 で役割切替をタブ同居に決定",
       "components": [
-        { "kaze": "Tabs", "as": "Tabs", "source": "mui" },
-        { "kaze": "Card", "as": "Card", "source": "mui" },
-        { "kaze": "Chip", "as": "Chip", "source": "mui" },
-        { "kaze": "Button", "as": "Button", "source": "mui" },
+        {
+          "kaze": "Tabs",
+          "as": "Tabs",
+          "source": "mui"
+        },
+        {
+          "kaze": "Card",
+          "as": "Card",
+          "source": "mui"
+        },
+        {
+          "kaze": "Chip",
+          "as": "Chip",
+          "source": "mui"
+        },
+        {
+          "kaze": "Button",
+          "as": "Button",
+          "source": "mui"
+        },
         {
           "kaze": "Chip",
           "as": "TagChip",
@@ -210,8 +272,16 @@
       "path": "src/pages/SellPage.tsx",
       "journey": "出品 3（出品）。design/decisions/0004 で 1 画面スクロール（Stepper を使わない）と決定",
       "components": [
-        { "kaze": "Card", "as": "Card", "source": "mui" },
-        { "kaze": "Button", "as": "Button", "source": "mui" },
+        {
+          "kaze": "Card",
+          "as": "Card",
+          "source": "mui"
+        },
+        {
+          "kaze": "Button",
+          "as": "Button",
+          "source": "mui"
+        },
         {
           "kaze": "CustomTextField",
           "as": "FormField",
@@ -231,7 +301,55 @@
           "localPath": "src/components/tw/TagChip.tsx"
         }
       ],
-      "tokens": ["color.light.primary.main", "color.light.success.main"]
+      "tokens": [
+        "color.light.primary.main",
+        "color.light.success.main"
+      ]
+    },
+    {
+      "name": "EffectLabPage",
+      "path": "src/pages/EffectLabPage.tsx",
+      "journey": "出品 6（値下げの判断）を 🚧 まで。design/decisions/0003 で「効果の数字を出す」から「効果が言える条件を満たしているかを出す」に問いを組み替えた。合成データによる方法論の検証であり、出品者の実績ではない",
+      "components": [
+        {
+          "kaze": "Alert",
+          "as": "Alert",
+          "source": "mui"
+        },
+        {
+          "kaze": "Card",
+          "as": "Card",
+          "source": "mui"
+        },
+        {
+          "kaze": "Chip",
+          "as": "Chip",
+          "source": "mui"
+        },
+        {
+          "kaze": "Table",
+          "as": "Table",
+          "source": "mui"
+        },
+        {
+          "kaze": "Button",
+          "as": "Button",
+          "source": "mui"
+        },
+        {
+          "kaze": "Select",
+          "as": "FormSelect",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/FormSelect.tsx"
+        }
+      ],
+      "tokens": [
+        "color.light.primary.main",
+        "color.light.success.main",
+        "color.light.warning.main",
+        "color.light.error.main",
+        "color.light.info.main"
+      ]
     }
   ]
 }
