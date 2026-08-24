@@ -204,6 +204,34 @@
         "color.light.warning.main",
         "color.light.info.main"
       ]
+    },
+    {
+      "name": "SellPage",
+      "path": "src/pages/SellPage.tsx",
+      "journey": "出品 3（出品）。design/decisions/0004 で 1 画面スクロール（Stepper を使わない）と決定",
+      "components": [
+        { "kaze": "Card", "as": "Card", "source": "mui" },
+        { "kaze": "Button", "as": "Button", "source": "mui" },
+        {
+          "kaze": "CustomTextField",
+          "as": "FormField",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/FormField.tsx"
+        },
+        {
+          "kaze": "Select",
+          "as": "FormSelect",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/FormSelect.tsx"
+        },
+        {
+          "kaze": "Chip",
+          "as": "TagChip",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/TagChip.tsx"
+        }
+      ],
+      "tokens": ["color.light.primary.main", "color.light.success.main"]
     }
   ]
 }

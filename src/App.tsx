@@ -1,3 +1,4 @@
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
@@ -5,6 +6,7 @@ import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined'
 import { Link, Route, Routes } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
 import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
@@ -16,6 +18,7 @@ import { ComponentCatalogPage } from '@/pages/ComponentCatalogPage'
 import { ItemDetailPage } from '@/pages/ItemDetailPage'
 import { ItemListPage } from '@/pages/ItemListPage'
 import { MyPage } from '@/pages/MyPage'
+import { SellPage } from '@/pages/SellPage'
 import { useColorMode } from '@/theme/ColorModeContext'
 
 const Header = () => {
@@ -64,6 +67,32 @@ const Header = () => {
             }}
           />
           <Box sx={{ flexGrow: 1 }} />
+          {/* 出品を思い立つのは「買い物をしている最中」が主なので、
+              どの画面からも 1 タップで入れる（design/journey-map.md §3） */}
+          <Button
+            component={Link}
+            to="/sell"
+            size="small"
+            startIcon={<AddCircleOutlineOutlinedIcon />}
+            sx={{
+              color: 'inherit',
+              fontWeight: 700,
+              mr: 0.5,
+              display: { xs: 'none', sm: 'inline-flex' },
+            }}
+          >
+            出品
+          </Button>
+          <AppIconButton
+            tooltip="出品する"
+            aria-label="出品する"
+            color="inherit"
+            component={Link}
+            to="/sell"
+            sx={{ display: { xs: 'inline-flex', sm: 'none' } }}
+          >
+            <AddCircleOutlineOutlinedIcon />
+          </AppIconButton>
           <AppIconButton
             tooltip="マイページ（購入履歴・出品管理）"
             aria-label="マイページを開く"
@@ -104,6 +133,7 @@ export const App = () => (
       <Route path="/items/:id" element={<ItemDetailPage />} />
       <Route path="/checkout/:id" element={<CheckoutWalletPage />} />
       <Route path="/mypage" element={<MyPage />} />
+      <Route path="/sell" element={<SellPage />} />
       <Route path="/components" element={<ComponentCatalogPage />} />
     </Routes>
   </Box>

@@ -124,5 +124,8 @@ node tools/drift/check-drift.mjs
 ## 5. 次に埋めるもの
 
 [`journey-map.md`](journey-map.md) §4 の優先順位表が単一ソース。
-現時点の先頭は **マイページ（購入履歴 / 出品管理のタブ）**
-（[`decisions/0002`](decisions/0002-role-switching.md) で設計済み・実装未着手）。
+現時点の先頭は **取引完了 → 出品への導線**（役割往復の残り半分。
+決済完了画面に 1 本足すだけ）。
+
+マイページ（[`0002`](decisions/0002-role-switching.md)）と
+出品フォーム（[`0004`](decisions/0004-listing-form.md)）は実装済み。

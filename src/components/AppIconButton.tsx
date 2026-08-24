@@ -1,7 +1,7 @@
 import type { ElementType, ReactNode } from 'react'
 import MuiIconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import { alpha, useTheme } from '@mui/material/styles'
+import { alpha, useTheme, type SxProps, type Theme } from '@mui/material/styles'
 
 /**
  * kaze の IconButton 仕様（get_component('iconButton')）から再生成。
@@ -22,6 +22,8 @@ export interface AppIconButtonProps {
   /** react-router の Link 等、別要素としてレンダリングしたいとき */
   component?: ElementType
   to?: string
+  /** レスポンシブな出し分けなど、配置側の都合だけを渡す */
+  sx?: SxProps<Theme>
 }
 
 export const AppIconButton = ({
@@ -36,6 +38,7 @@ export const AppIconButton = ({
   'aria-label': ariaLabel,
   component,
   to,
+  sx,
 }: AppIconButtonProps) => {
   const theme = useTheme()
   const tone = color === 'inherit' ? theme.palette.text.primary : theme.palette[color].main
@@ -58,6 +61,7 @@ export const AppIconButton = ({
     sx: {
       ...variantSx,
       transition: 'background-color 0.15s ease, border-color 0.15s ease',
+      ...sx,
     },
   } as const
 
