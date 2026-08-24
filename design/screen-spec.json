@@ -222,6 +222,11 @@
           "as": "SortSelect",
           "source": "regenerated-tailwind",
           "localPath": "src/components/tw/SortSelect.tsx"
+        },
+        {
+          "kaze": "Table",
+          "as": "Table",
+          "source": "mui"
         }
       ],
       "tokens": [

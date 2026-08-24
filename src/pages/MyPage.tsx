@@ -194,6 +194,26 @@ export const MyPage = () => {
           ) : (
             myListings.map((item) => <ListingRow key={item.listing.id} item={item} />)
           )}
+
+          {/* 出品ジャーニー 5（観察）→ 6（施策）の接続点。
+              「いいねは付いたが売れない」の次に来る問いをここで受ける */}
+          <Card
+            variant="outlined"
+            sx={{ mt: 3, borderRadius: 1.5, borderColor: 'divider', bgcolor: 'action.hover' }}
+          >
+            <CardContent>
+              <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
+                値下げすべきか迷ったら
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+                値下げの効果をどう測るかを、答えの分かっている人工データで確かめられます。
+                この出品の実績を分析するものではありません
+              </Typography>
+              <Button component={Link} to="/effect-lab" variant="outlined" size="small">
+                効果の検証を見る
+              </Button>
+            </CardContent>
+          </Card>
         </>
       )}
 

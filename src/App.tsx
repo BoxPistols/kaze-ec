@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography'
 import { AppIconButton } from '@/components/AppIconButton'
 import { CheckoutWalletPage } from '@/pages/CheckoutWalletPage'
 import { ComponentCatalogPage } from '@/pages/ComponentCatalogPage'
+import { EffectLabPage } from '@/pages/EffectLabPage'
 import { ItemDetailPage } from '@/pages/ItemDetailPage'
 import { ItemListPage } from '@/pages/ItemListPage'
 import { MyPage } from '@/pages/MyPage'
@@ -135,6 +136,7 @@ export const App = () => (
       <Route path="/mypage" element={<MyPage />} />
       <Route path="/sell" element={<SellPage />} />
       <Route path="/components" element={<ComponentCatalogPage />} />
+      <Route path="/effect-lab" element={<EffectLabPage />} />
     </Routes>
   </Box>
 )

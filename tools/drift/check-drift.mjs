@@ -57,10 +57,16 @@ const LAYOUT_ALLOWLIST = new Set([
   // Tab も同様に Tabs の構造的な子（Tabs 自体が宣言されていれば対象外）
   'Tab',
   'ImageGallery',
-  'Table',
+  // Table は get_component('table') が実在するので**対象外にしてはいけない**。
+  // 以前ここに 'Table' を入れていたため、表を使っても宣言を求められなかった。
+  // 構造的な子だけを対象外にする（Card / CardContent と同じ扱い）
+  'TableContainer',
+  'TableHead',
   'TableBody',
   'TableRow',
   'TableCell',
+  // AlertTitle は Alert の構造的な子
+  'AlertTitle',
   'Link',
   'Route',
   'Routes',
