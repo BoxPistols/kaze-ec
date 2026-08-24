@@ -1,5 +1,6 @@
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
 import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined'
 import { Link, Route, Routes } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar'
@@ -14,6 +15,7 @@ import { CheckoutWalletPage } from '@/pages/CheckoutWalletPage'
 import { ComponentCatalogPage } from '@/pages/ComponentCatalogPage'
 import { ItemDetailPage } from '@/pages/ItemDetailPage'
 import { ItemListPage } from '@/pages/ItemListPage'
+import { MyPage } from '@/pages/MyPage'
 import { useColorMode } from '@/theme/ColorModeContext'
 
 const Header = () => {
@@ -63,6 +65,15 @@ const Header = () => {
           />
           <Box sx={{ flexGrow: 1 }} />
           <AppIconButton
+            tooltip="マイページ（購入履歴・出品管理）"
+            aria-label="マイページを開く"
+            color="inherit"
+            component={Link}
+            to="/mypage"
+          >
+            <PersonOutlineOutlinedIcon />
+          </AppIconButton>
+          <AppIconButton
             tooltip="コンポーネントカタログ（kaze MCP から生成）"
             aria-label="コンポーネントカタログを開く"
             color="inherit"
@@ -92,6 +103,7 @@ export const App = () => (
       <Route path="/" element={<ItemListPage />} />
       <Route path="/items/:id" element={<ItemDetailPage />} />
       <Route path="/checkout/:id" element={<CheckoutWalletPage />} />
+      <Route path="/mypage" element={<MyPage />} />
       <Route path="/components" element={<ComponentCatalogPage />} />
     </Routes>
   </Box>

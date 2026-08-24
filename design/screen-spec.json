@@ -181,6 +181,29 @@
         }
       ],
       "tokens": ["color.light.primary.main"]
+    },
+    {
+      "name": "MyPage",
+      "path": "src/pages/MyPage.tsx",
+      "journey": "購入 8（振り返り）/ 出品 5（観察）。design/decisions/0002 で役割切替をタブ同居に決定",
+      "components": [
+        { "kaze": "Tabs", "as": "Tabs", "source": "mui" },
+        { "kaze": "Card", "as": "Card", "source": "mui" },
+        { "kaze": "Chip", "as": "Chip", "source": "mui" },
+        { "kaze": "Button", "as": "Button", "source": "mui" },
+        {
+          "kaze": "Chip",
+          "as": "TagChip",
+          "source": "regenerated-tailwind",
+          "localPath": "src/components/tw/TagChip.tsx"
+        }
+      ],
+      "tokens": [
+        "color.light.primary.main",
+        "color.light.success.main",
+        "color.light.warning.main",
+        "color.light.info.main"
+      ]
     }
   ]
 }

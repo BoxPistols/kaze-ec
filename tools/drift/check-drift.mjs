@@ -54,6 +54,8 @@ const LAYOUT_ALLOWLIST = new Set([
   'Toolbar',
   'CardContent',
   'CardActionArea',
+  // Tab も同様に Tabs の構造的な子（Tabs 自体が宣言されていれば対象外）
+  'Tab',
   'ImageGallery',
   'Table',
   'TableBody',
