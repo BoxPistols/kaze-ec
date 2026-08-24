@@ -86,6 +86,36 @@ describe('クラスタ再標本', () => {
     expect(Math.abs(cluster - unit) / unit).toBeLessThan(0.15)
   })
 
+  it('処置が出品者単位のとき、クラスタ再標本の区間は必ず単位再標本より広い', () => {
+    // **ここが、上の「再現しなかった」の条件を裏返した測定。**
+    // 処置を出品者ごとに割り当てると出品者の切片が差分で相殺されなくなり、
+    // 単位再標本が狭くなる。同じデータで再標本方式だけ変える対の比較なので、
+    // 真の SD を推定するより安定している（真の SD は 150 本取っても ±6%）
+    const ratio = (over: Partial<Scenario>) => {
+      const out: number[] = []
+      for (let i = 1; i <= 4; i++) {
+        const rows = prepare(
+          generateDataset({ ...sc({ listingsPerSeller: 25 }), ...over, seed: i * 13 })
+            .records
+        ).rows
+        const u = bootstrapCI(rows, { bootstrap: 50, seed: i, resample: 'unit' }).aipw
+        const c = bootstrapCI(rows, { bootstrap: 50, seed: i, resample: 'cluster' }).aipw
+        if (u && c) out.push((c[1] - c[0]) / (u[1] - u[0]))
+      }
+      return out
+    }
+
+    const clusterAssigned = ratio({ treatmentByCluster: true })
+    expect(clusterAssigned).toHaveLength(4)
+    // 4 シード全部でクラスタ側が広い。1 本だけ見ると 1 を割ることがある
+    for (const r of clusterAssigned) expect(r).toBeGreaterThan(1.05)
+
+    // 対照。同じクラスタの大きさでも、処置が出品の中で変動していれば差は出ない
+    const listingAssigned = ratio({ treatmentByCluster: false })
+    const mean = (xs: number[]) => xs.reduce((s, v) => s + v, 0) / xs.length
+    expect(mean(clusterAssigned)).toBeGreaterThan(mean(listingAssigned))
+  })
+
   it('どちらの方式でも、真の SD を大きく外さない', () => {
     // ブートストラップそのものが妥当かの検査。
     // これが落ちたら、クラスタの話以前に区間推定が壊れている

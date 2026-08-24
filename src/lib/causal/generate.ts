@@ -37,6 +37,13 @@ export interface Scenario {
   hiddenConfounding: number
   /** 出品者ごとの共通効果の大きさ（ランダム切片の標準偏差） */
   sellerSd: number
+  /**
+   * 処置を出品者単位で割り当てる（この出品者は全出品値下げ / この出品者はしない）。
+   *
+   * false（既定）だと同じ出品者の中で値下げした出品としなかった出品が混ざり、
+   * 出品者の切片は差分で相殺される。true にすると相殺されなくなる
+   */
+  treatmentByCluster: boolean
   corruption: { missing: number; duplicate: number } | null
 }
 
@@ -59,6 +66,7 @@ const BASE: Scenario = {
   overlapSkew: 0,
   hiddenConfounding: 0,
   sellerSd: 0.6,
+  treatmentByCluster: false,
   corruption: null,
 }
 
@@ -108,6 +116,19 @@ export const SCENARIOS: Record<string, Scenario> = {
     confounding: 1.0,
     overlapSkew: 4.5,
   },
+  'cluster-assigned': {
+    ...BASE,
+    id: 'cluster-assigned',
+    label: '出品者単位で値下げ',
+    description:
+      '値下げを出品者ごとに決める（この出品者は全出品値下げ / この出品者はしない）',
+    expectation:
+      '出品の件数は十分でも、独立な割り当ては出品者数しかない。ゲートが件数ではなく出品者数で判定するはず',
+    confounding: 1.4,
+    n: 4000,
+    listingsPerSeller: 10,
+    treatmentByCluster: true,
+  },
   dirty: {
     ...BASE,
     id: 'dirty',
@@ -152,6 +173,13 @@ export const generateDataset = (s: Scenario): GeneratedDataset => {
   const sellerPastSales = Array.from({ length: sellerCount }, () =>
     Math.max(0, Math.round(Math.abs(normal(rng)) * 8))
   )
+  // 出品者単位で処置を割り当てる場合は、ループに入る前に決めてしまう。
+  // 出品者の過去成約数で交絡させる（売れていない出品者ほど値下げする）
+  const sellerTreatment = s.treatmentByCluster
+    ? sellerPastSales.map((past) =>
+        bernoulli(rng, sigmoid(s.confounding * (0.5 - 0.12 * past)))
+      )
+    : null
 
   for (let i = 0; i < s.n; i++) {
     const sellerIdx = i % sellerCount
@@ -168,7 +196,9 @@ export const generateDataset = (s: Scenario): GeneratedDataset => {
       s.confounding * (0.45 * (priceBand - 7) - 0.06 * likesAtListing) +
       s.overlapSkew * (priceBand - 7) +
       s.hiddenConfounding * hidden
-    const treatment = bernoulli(rng, sigmoid(propensityLogit))
+    const treatment = sellerTreatment
+      ? sellerTreatment[sellerIdx]
+      : bernoulli(rng, sigmoid(propensityLogit))
 
     // 成果。真の効果は s.effect（ポイント差ではなくロジット上で足すと
     // 率が変わってしまうので、確率スケールで足してからクリップする）

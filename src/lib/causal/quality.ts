@@ -1,3 +1,4 @@
+import { detectAssignment } from './assignment'
 import { overlapShare } from './diagnostics'
 import type { LogRecord, PrepareResult, QualityCheck, QualityReport } from './types'
 
@@ -43,6 +44,34 @@ export const checkQuality = (
   if (minGroup < GROUP_SIZE_FAIL) {
     requiredData.push(
       `各群 ${GROUP_SIZE_FAIL} 件以上の出品（現在の最小群は ${minGroup} 件）`
+    )
+  }
+
+  // 1b. 独立に処置が割り当てられた数。
+  // **件数のゲートだけでは足りない。** 処置が出品者単位で割り当てられていると、
+  // 出品は各群 2000 件あっても独立な割り当ては 200 人分しかない、ということが
+  // 起きる。割り当ての単位は設定で受け取らずデータから観測する（assignment.ts）
+  const assign = detectAssignment(rows)
+  const minAssign = Math.min(assign.treatedUnits, assign.controlUnits)
+  checks.push({
+    id: 'assignment-unit',
+    label: '独立に処置が割り当てられた数',
+    status:
+      assign.unit === 'listing'
+        ? 'pass'
+        : minAssign < GROUP_SIZE_FAIL
+          ? 'fail'
+          : minAssign < GROUP_SIZE_WARN
+            ? 'warn'
+            : 'pass',
+    detail:
+      assign.unit === 'listing'
+        ? `値下げは出品ごとに決まっている（複数出品を持つ ${assign.multiListingSellers} 人のうち ${(assign.variationShare * 100).toFixed(0)}% で出品者内に両方がある）。件数がそのまま独立な割り当ての数`
+        : `値下げは出品者ごとに決まっている。独立な割り当ては 値下げ ${assign.treatedUnits} 人 / しなかった ${assign.controlUnits} 人（出品の件数ではなくこちらで判定する）`,
+  })
+  if (assign.unit === 'seller' && minAssign < GROUP_SIZE_FAIL) {
+    requiredData.push(
+      `各群 ${GROUP_SIZE_FAIL} 人以上の出品者（現在は最小群 ${minAssign} 人。出品を増やしても独立な割り当ては増えない）`
     )
   }
 
