@@ -125,12 +125,14 @@ node tools/drift/check-drift.mjs
 ## 5. 次に埋めるもの
 
 [`journey-map.md`](journey-map.md) §4 の優先順位表が単一ソース。
-現時点の先頭は **お気に入りの永続化**（購入 4。「後で考える」が成立していない）。
+現時点の先頭は **分析**（出品 6・8）。合成ログの生成器が要るため
+[`0003`](decisions/0003-analytics-scope.md) で別スコープに切ってある。
 
 購入・出品の両ジャーニーと、その往復は繋がった。決定記録は
 [`0002`](decisions/0002-role-switching.md)（役割切替）/
 [`0004`](decisions/0004-listing-form.md)（出品フォーム）/
-[`0005`](decisions/0005-price-reference.md)（参考価格）。
+[`0005`](decisions/0005-price-reference.md)（参考価格）/
+[`0006`](decisions/0006-favorites.md)（お気に入り）。
 
 残る大きな塊は分析（[`0003`](decisions/0003-analytics-scope.md)）で、
 合成ログの生成器が要るため別スコープ。

@@ -16,6 +16,7 @@ export interface ListingFilters {
   category: Category | null
   tags: string[]
   stablecoinOnly: boolean
+  favoritesOnly: boolean
   sort: SortKey
 }
 
@@ -41,10 +42,17 @@ const compareBySort = (a: Listing, b: Listing, sort: SortKey): number => {
   }
 }
 
-/** 絞り込みと並び替えの純粋関数。UI から切り離してテストできる */
+/**
+ * 絞り込みと並び替えの純粋関数。UI から切り離してテストできる。
+ *
+ * お気に入りも**ここに条件を 1 つ足す形**で扱う（decisions/0006）。
+ * 別の絞り込み実装を作らないので、「お気に入りの中でカメラだけ」のような
+ * 組み合わせがそのまま動く
+ */
 export const applyListingFilters = (
   listings: Listing[],
-  filters: ListingFilters
+  filters: ListingFilters,
+  favoriteIds: readonly string[] = []
 ): Listing[] =>
   listings
     .filter((listing) => matchesKeyword(listing, filters.keyword))
@@ -55,6 +63,7 @@ export const applyListingFilters = (
         filters.tags.every((tag) => listing.tags.includes(tag))
     )
     .filter((listing) => !filters.stablecoinOnly || listing.acceptsStablecoin)
+    .filter((listing) => !filters.favoritesOnly || favoriteIds.includes(listing.id))
     .slice()
     .sort((a, b) => compareBySort(a, b, filters.sort))
 
@@ -63,22 +72,27 @@ const INITIAL_FILTERS: ListingFilters = {
   category: null,
   tags: [],
   stablecoinOnly: false,
+  favoritesOnly: false,
   sort: 'newest',
 }
 
-export const useListingFilters = (listings: Listing[]) => {
+export const useListingFilters = (
+  listings: Listing[],
+  favoriteIds: readonly string[] = []
+) => {
   const [filters, setFilters] = useState<ListingFilters>(INITIAL_FILTERS)
 
   const results = useMemo(
-    () => applyListingFilters(listings, filters),
-    [listings, filters]
+    () => applyListingFilters(listings, filters, favoriteIds),
+    [listings, filters, favoriteIds]
   )
 
   const isFiltered =
     filters.keyword.trim() !== '' ||
     filters.category !== null ||
     filters.tags.length > 0 ||
-    filters.stablecoinOnly
+    filters.stablecoinOnly ||
+    filters.favoritesOnly
 
   return {
     filters,
@@ -100,6 +114,8 @@ export const useListingFilters = (listings: Listing[]) => {
       })),
     toggleStablecoinOnly: () =>
       setFilters((prev) => ({ ...prev, stablecoinOnly: !prev.stablecoinOnly })),
+    toggleFavoritesOnly: () =>
+      setFilters((prev) => ({ ...prev, favoritesOnly: !prev.favoritesOnly })),
     reset: () => setFilters(INITIAL_FILTERS),
   }
 }

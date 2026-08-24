@@ -8,6 +8,7 @@ const base: ListingFilters = {
   category: null,
   tags: [],
   stablecoinOnly: false,
+  favoritesOnly: false,
   sort: 'newest',
 }
 
@@ -57,5 +58,44 @@ describe('applyListingFilters', () => {
 
   it('該当なしなら空配列', () => {
     expect(applyListingFilters(LISTINGS, { ...base, keyword: 'zzzz-該当なし' })).toEqual([])
+  })
+})
+
+describe('applyListingFilters — お気に入り', () => {
+  it('favoritesOnly が false なら お気に入り指定は影響しない', () => {
+    const r = applyListingFilters(LISTINGS, base, ['l-001'])
+    expect(r).toHaveLength(LISTINGS.length)
+  })
+
+  it('favoritesOnly が true なら指定 id だけ返す', () => {
+    const r = applyListingFilters(LISTINGS, { ...base, favoritesOnly: true }, [
+      'l-001',
+      'l-003',
+    ])
+    expect(r.map((l) => l.id).sort()).toEqual(['l-001', 'l-003'])
+  })
+
+  it('お気に入りが空なら結果も空', () => {
+    expect(
+      applyListingFilters(LISTINGS, { ...base, favoritesOnly: true }, [])
+    ).toEqual([])
+  })
+
+  it('他の条件と組み合わせられる（お気に入りの中でカメラだけ）', () => {
+    const r = applyListingFilters(
+      LISTINGS,
+      { ...base, favoritesOnly: true, category: 'カメラ' },
+      ['l-001', 'l-002']
+    )
+    expect(r.every((l) => l.category === 'カメラ')).toBe(true)
+    expect(r.every((l) => ['l-001', 'l-002'].includes(l.id))).toBe(true)
+  })
+
+  it('存在しない id が混ざっていても落ちない', () => {
+    const r = applyListingFilters(LISTINGS, { ...base, favoritesOnly: true }, [
+      'l-001',
+      'nope',
+    ])
+    expect(r.map((l) => l.id)).toEqual(['l-001'])
   })
 })

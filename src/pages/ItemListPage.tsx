@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined'
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined'
@@ -19,6 +18,7 @@ import { SearchField } from '@/components/tw/SearchField'
 import { SortSelect } from '@/components/tw/SortSelect'
 import { TagChip } from '@/components/tw/TagChip'
 import { ALL_TAGS, CATEGORIES, LISTINGS, type Listing } from '@/data/listings'
+import { useFavorites } from '@/hooks/useFavorites'
 import { SORT_OPTIONS, useListingFilters } from '@/hooks/useListingFilters'
 
 const CONTAINER_SX = {
@@ -27,10 +27,17 @@ const CONTAINER_SX = {
   py: { xs: 3, md: 5 },
 }
 
-const ListingCard = ({ listing }: { listing: Listing }) => {
+const ListingCard = ({
+  listing,
+  favorited,
+  onToggleFavorite,
+}: {
+  listing: Listing
+  favorited: boolean
+  onToggleFavorite: () => void
+}) => {
   const theme = useTheme()
   const isLight = theme.palette.mode === 'light'
-  const [favorited, setFavorited] = useState(false)
 
   return (
     <Card
@@ -100,7 +107,7 @@ const ListingCard = ({ listing }: { listing: Listing }) => {
             variant="filled"
             color={favorited ? 'error' : 'inherit'}
             size="small"
-            onClick={() => setFavorited((prev) => !prev)}
+            onClick={onToggleFavorite}
           >
             {favorited ? (
               <FavoriteOutlinedIcon fontSize="small" />
@@ -136,6 +143,8 @@ const ListingCard = ({ listing }: { listing: Listing }) => {
 }
 
 export const ItemListPage = () => {
+  const { ids: favoriteIds, has: isFavorited, toggle: toggleFavorite, count } =
+    useFavorites()
   const {
     filters,
     results,
@@ -145,8 +154,9 @@ export const ItemListPage = () => {
     toggleCategory,
     toggleTag,
     toggleStablecoinOnly,
+    toggleFavoritesOnly,
     reset,
-  } = useListingFilters(LISTINGS)
+  } = useListingFilters(LISTINGS, favoriteIds)
 
   return (
     <Container sx={CONTAINER_SX}>
@@ -194,6 +204,16 @@ export const ItemListPage = () => {
           selected={filters.stablecoinOnly}
           onClick={toggleStablecoinOnly}
         />
+        {/* お気に入りも絞り込みの 1 つとして並べる（decisions/0006）。
+            他の条件と組み合わせられるのがこの置き方の理由 */}
+        <TagChip
+          label={`♡ お気に入り${count > 0 ? ` (${count})` : ''}`}
+          color="error"
+          variant={filters.favoritesOnly ? 'filled' : 'outlined'}
+          selected={filters.favoritesOnly}
+          disabled={count === 0}
+          onClick={toggleFavoritesOnly}
+        />
       </div>
 
       <div className="mb-4 flex flex-wrap gap-1.5">
@@ -225,7 +245,9 @@ export const ItemListPage = () => {
       {results.length === 0 ? (
         <Box sx={{ py: 6, textAlign: 'center' }}>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-            条件に合う商品が見つかりませんでした。
+            {filters.favoritesOnly && count === 0
+              ? 'お気に入りがまだありません。気になる商品のハートを押すとここに集まります。'
+              : '条件に合う商品が見つかりませんでした。'}
           </Typography>
           <Button variant="outlined" size="medium" onClick={reset}>
             条件をクリア
@@ -235,7 +257,11 @@ export const ItemListPage = () => {
         <Grid container spacing={{ xs: 2.5, md: 3 }}>
           {results.map((listing) => (
             <Grid key={listing.id} size={{ xs: 12, sm: 6, md: 4 }}>
-              <ListingCard listing={listing} />
+              <ListingCard
+            listing={listing}
+            favorited={isFavorited(listing.id)}
+            onToggleFavorite={() => toggleFavorite(listing.id)}
+          />
             </Grid>
           ))}
         </Grid>
