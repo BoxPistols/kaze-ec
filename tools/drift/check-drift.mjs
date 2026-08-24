@@ -59,7 +59,8 @@ const LAYOUT_ALLOWLIST = new Set([
   'ImageGallery',
   // Table は get_component('table') が実在するので**対象外にしてはいけない**。
   // 以前ここに 'Table' を入れていたため、表を使っても宣言を求められなかった。
-  // 構造的な子だけを対象外にする（Card / CardContent と同じ扱い）
+  // 構造的な子だけを対象外にする（Card / CardContent と同じ扱い）。
+  // この免除リスト自体を checkAllowlist が検査する
   'TableContainer',
   'TableHead',
   'TableBody',
@@ -249,6 +250,54 @@ const checkScreen = async (client, screen) => {
   return findings
 }
 
+/**
+ * **免除リスト自身を検査する。**
+ *
+ * LAYOUT_ALLOWLIST は「DS に同等品が無いので宣言しなくてよい」部品の一覧だが、
+ * その正当性はこれまでコメントで主張されているだけだった。実際 `Table` は
+ * `get_component('table')` が実在するのに免除されており、外した途端に
+ * 既存画面の無申告が 1 件出てきた。
+ *
+ * 機械検査は、検査していないものについて何も報告しない。0 件は「準拠して
+ * いる」ではなく「宣言した範囲で違反がない」。免除リストは沈黙するので、
+ * 免除の正当性を検査する層が別に要る。
+ *
+ * 構造的な子（CardContent / TableRow / AlertTitle など）は親が宣言されて
+ * いれば正当な免除で、独立した get_component エントリを持たない。だから
+ * 「DS に実在するのに免除されている」ものだけを落とせばよい
+ */
+const STRUCTURAL_CHILDREN = new Set([
+  'CardContent',
+  'CardActionArea',
+  'Tab',
+  'TableContainer',
+  'TableHead',
+  'TableBody',
+  'TableRow',
+  'TableCell',
+  'AlertTitle',
+])
+
+const checkAllowlist = async (client) => {
+  const findings = []
+  for (const name of LAYOUT_ALLOWLIST) {
+    if (STRUCTURAL_CHILDREN.has(name)) continue
+    const result = await client.callTool('get_component', {
+      name: name[0].toLowerCase() + name.slice(1),
+    })
+    const text = typeof result === 'string' ? result : JSON.stringify(result)
+    if (!/not found/i.test(text)) {
+      findings.push({
+        type: '免除の誤り',
+        detail:
+          `${name} は get_component に実在するのに LAYOUT_ALLOWLIST で` +
+          `検査対象外になっている。allowlist から外して screen-spec.json に宣言する`,
+      })
+    }
+  }
+  return findings
+}
+
 const main = async () => {
   if (!existsSync(KAZE_UX_PATH)) {
     console.error(
@@ -267,6 +316,7 @@ const main = async () => {
 
   const allFindings = []
   try {
+    allFindings.push(...(await checkAllowlist(client)))
     for (const entry of [...spec.screens, ...(spec.foundations ?? [])]) {
       const findings = await checkScreen(client, entry)
       allFindings.push(...findings)
