@@ -12,6 +12,12 @@ import { FormField } from '@/components/tw/FormField'
 import { FormSelect } from '@/components/tw/FormSelect'
 import { TagChip } from '@/components/tw/TagChip'
 import {
+  CURRENT_USER,
+  PURCHASES,
+  selectCategoryReference,
+} from '@/data/account'
+import { LISTINGS } from '@/data/listings'
+import {
   CATEGORY_OPTIONS,
   CONDITION_OPTIONS,
   useListingDraft,
@@ -40,6 +46,15 @@ const SectionLabel = ({ children }: { children: React.ReactNode }) => (
 export const SellPage = () => {
   const { draft, errors, canSubmit, tags, set, reset } = useListingDraft()
   const [submitted, setSubmitted] = useState(false)
+
+  // 「相場」は出さない（decisions/0005）。カテゴリあたりの件数が少なく、
+  // 平均も中央値もその 1 件の価格そのものになるため
+  const reference = selectCategoryReference(
+    LISTINGS,
+    PURCHASES,
+    draft.category,
+    CURRENT_USER
+  )
 
   if (submitted) {
     return (
@@ -132,6 +147,52 @@ export const SellPage = () => {
               error={Boolean(errors.price)}
               helperText={errors.price ?? '300 円以上で設定できます'}
             />
+
+            {/* 参考として同カテゴリの出品を並べる。推奨価格は出さない
+                （件数が少なく、丸めた数字に根拠が無いため / decisions/0005） */}
+            {reference.length > 0 && (
+              <Box
+                sx={{
+                  p: 1.5,
+                  borderRadius: 1,
+                  bgcolor: 'action.hover',
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  sx={{ display: 'block', color: 'text.secondary', mb: 1 }}
+                >
+                  参考: 同じカテゴリで出品中のもの
+                  {reference.length < 3 && `（${reference.length} 件のみ）`}
+                </Typography>
+                {reference.map((l) => (
+                  <Box
+                    key={l.id}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      gap: 2,
+                      py: 0.25,
+                    }}
+                  >
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'text.secondary',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {l.title}
+                    </Typography>
+                    <Typography variant="caption" sx={{ fontWeight: 700, flexShrink: 0 }}>
+                      ¥{l.price.toLocaleString()}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            )}
           </Box>
         </CardContent>
       </Card>

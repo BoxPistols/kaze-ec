@@ -181,9 +181,20 @@ export const CheckoutWalletPage = () => {
               <CheckCircleOutlinedIcon sx={{ color: 'success.main' }} fontSize="small" />
               <Chip label="取引完了" size="small" color="success" />
             </Box>
-            <Typography variant="body2" sx={{ lineHeight: 1.8 }}>
+            <Typography variant="body2" sx={{ lineHeight: 1.8, mb: 2.5 }}>
               発送が確認されました。取引が完了しました。
             </Typography>
+
+            {/* 出品を思い立つもう 1 つの場面が「取引が終わった直後（片付けの
+                流れ）」（design/journey-map.md §3）。ここで導線を切らない */}
+            <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+              <Button component={Link} to="/sell" variant="outlined" size="medium">
+                自分も出品する
+              </Button>
+              <Button component={Link} to="/mypage" variant="text" size="medium">
+                購入履歴を見る
+              </Button>
+            </Box>
           </CardContent>
         </Card>
       )}

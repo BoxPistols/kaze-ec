@@ -54,6 +54,8 @@ kaze MCP（`get_token` / `get_component` / `check_rule` / `search`）で仕様�
 | 出品一覧 | `/` | 購入 1〜2（探索・比較） |
 | 商品詳細 | `/items/:id` | 購入 3（検討） |
 | 決済ウォレット | `/checkout/:id` | 購入 5〜7（決済・待機・完了） |
+| マイページ | `/mypage` | 購入 8（振り返り）/ 出品 5（観察） |
+| 出品する | `/sell` | 出品 1〜4（動機・相場観・出品・公開） |
 | コンポーネントカタログ | `/components` | — （MCP から生成した部品一覧） |
 
 未実装の区間は [`design/journey-map.md`](design/journey-map.md) の表に

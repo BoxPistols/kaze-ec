@@ -90,7 +90,8 @@ node tools/drift/check-drift.mjs
 
 ## 3. 実際にこの順で作った例
 
-`CheckoutWalletPage`（決済 × 暗号資産）が Step 1〜7 を通った唯一の完全な例。
+`CheckoutWalletPage`（決済 × 暗号資産）を例に、各ステップの実物を示す。
+`MyPage` / `SellPage` も同じ順で作った。
 
 | Step | 実物 |
 | ---- | ---- |
@@ -124,8 +125,12 @@ node tools/drift/check-drift.mjs
 ## 5. 次に埋めるもの
 
 [`journey-map.md`](journey-map.md) §4 の優先順位表が単一ソース。
-現時点の先頭は **取引完了 → 出品への導線**（役割往復の残り半分。
-決済完了画面に 1 本足すだけ）。
+現時点の先頭は **お気に入りの永続化**（購入 4。「後で考える」が成立していない）。
 
-マイページ（[`0002`](decisions/0002-role-switching.md)）と
-出品フォーム（[`0004`](decisions/0004-listing-form.md)）は実装済み。
+購入・出品の両ジャーニーと、その往復は繋がった。決定記録は
+[`0002`](decisions/0002-role-switching.md)（役割切替）/
+[`0004`](decisions/0004-listing-form.md)（出品フォーム）/
+[`0005`](decisions/0005-price-reference.md)（参考価格）。
+
+残る大きな塊は分析（[`0003`](decisions/0003-analytics-scope.md)）で、
+合成ログの生成器が要るため別スコープ。

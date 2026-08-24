@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   CURRENT_USER,
   PURCHASES,
+  selectCategoryReference,
   selectMyListings,
   selectMyPurchases,
   summarizeListings,
@@ -84,5 +85,50 @@ describe('summarizeListings', () => {
       sold: 0,
       totalLikes: 0,
     })
+  })
+})
+
+describe('selectCategoryReference', () => {
+  it('カテゴリ未選択なら空配列', () => {
+    expect(selectCategoryReference(LISTINGS, PURCHASES, '', CURRENT_USER)).toEqual([])
+  })
+
+  it('指定カテゴリのものだけを返す', () => {
+    const r = selectCategoryReference(LISTINGS, [], 'カメラ', 'nobody')
+    expect(r.length).toBeGreaterThan(0)
+    expect(r.every((l) => l.category === 'カメラ')).toBe(true)
+  })
+
+  it('自分の出品は除く', () => {
+    const r = selectCategoryReference(LISTINGS, [], 'カメラ', CURRENT_USER)
+    expect(r.every((l) => l.sellerName !== CURRENT_USER)).toBe(true)
+  })
+
+  it('売却済みは除く', () => {
+    const sold: Purchase[] = [
+      { listingId: 'l-008', purchasedAt: '2026-08-22', status: '取引完了', paidWith: 'jpy' },
+    ]
+    const r = selectCategoryReference(LISTINGS, sold, 'カメラ', 'nobody')
+    expect(r.some((l) => l.id === 'l-008')).toBe(false)
+  })
+
+  it('安い順に並ぶ', () => {
+    const r = selectCategoryReference(LISTINGS, [], 'カメラ', 'nobody')
+    const prices = r.map((l) => l.price)
+    expect([...prices].sort((a, b) => a - b)).toEqual(prices)
+  })
+
+  it('limit 件までに絞る', () => {
+    expect(selectCategoryReference(LISTINGS, [], 'カメラ', 'nobody', 1)).toHaveLength(1)
+  })
+
+  it('該当が無ければ空配列', () => {
+    expect(selectCategoryReference(LISTINGS, [], '存在しないカテゴリ', 'nobody')).toEqual([])
+  })
+
+  it('元の配列を破壊しない', () => {
+    const before = LISTINGS.map((l) => l.id)
+    selectCategoryReference(LISTINGS, [], 'カメラ', 'nobody')
+    expect(LISTINGS.map((l) => l.id)).toEqual(before)
   })
 })

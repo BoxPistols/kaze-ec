@@ -89,6 +89,36 @@ export const selectMyPurchases = (purchases: Purchase[]): PurchaseRecord[] =>
     .filter((r): r is PurchaseRecord => r !== null)
     .sort((a, b) => b.purchase.purchasedAt.localeCompare(a.purchase.purchasedAt))
 
+/**
+ * 出品時の参考として見せる、同カテゴリの出品。
+ *
+ * **「相場」は出さない**（decisions/0005）。カテゴリあたり 1〜2 件しか
+ * 無いので、平均も中央値もその 1 件の価格そのものになる。丸めた数字を
+ * 出すと、根拠のない値を根拠があるように見せることになる。
+ *
+ * - 売却済みは除く（「今出すならいくら」の参考にならない）
+ * - 自分の出品は除く（自分の値付けを自分に見せても参考にならない）
+ * - 安い順。最大件数は呼び出し側が決める
+ */
+export const selectCategoryReference = (
+  listings: Listing[],
+  purchases: Purchase[],
+  category: string,
+  user: string,
+  limit = 3
+): Listing[] => {
+  if (!category) return []
+  const soldIds = new Set(purchases.map((p) => p.listingId))
+  return listings
+    .filter(
+      (l) =>
+        l.category === category && l.sellerName !== user && !soldIds.has(l.id)
+    )
+    .slice()
+    .sort((a, b) => a.price - b.price)
+    .slice(0, limit)
+}
+
 /** 出品のサマリ。ジャーニー 出品 8（振り返り）の最小版 */
 export const summarizeListings = (myListings: MyListing[]) => ({
   total: myListings.length,
