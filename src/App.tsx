@@ -60,8 +60,10 @@ const Header = () => {
             label="DEMO"
             size="small"
             sx={{
-              height: 20,
-              fontSize: 11,
+              // 12px 未満は使わない（DS ルール T01、例外なし）。
+              // 高さも文字に合わせて広げる
+              height: 22,
+              fontSize: 12,
               fontWeight: 700,
               bgcolor: isLight ? 'rgba(255,255,255,0.18)' : 'action.selected',
               color: 'inherit',
