@@ -155,7 +155,7 @@ const BlockedPanel = ({ result }: { result: Extract<AnalysisResult, { status: 'b
         品質検査に不合格があるため、推定を実行していません。
         条件を満たさないまま数字を出すと、その数字が独り歩きします。
       </Typography>
-      <Box component="ul" sx={{ pl: 2.5, m: 0 }}>
+      <Box component="ul" sx={{ pl: 2.5, m: 0, listStyleType: 'disc' }}>
         {result.quality.reasons.map((r) => (
           <Typography component="li" variant="body2" key={r}>
             {r}
@@ -173,7 +173,7 @@ const BlockedPanel = ({ result }: { result: Extract<AnalysisResult, { status: 'b
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
             「不足しています」で終わらせない。次に何を集めればいいかまで返す
           </Typography>
-          <Box component="ul" sx={{ pl: 2.5, m: 0 }}>
+          <Box component="ul" sx={{ pl: 2.5, m: 0, listStyleType: 'disc' }}>
             {result.quality.requiredData.map((r) => (
               <Typography component="li" variant="body2" key={r} sx={{ mb: 0.5 }}>
                 {r}
@@ -299,7 +299,7 @@ const OkPanel = ({ result }: { result: Extract<AnalysisResult, { status: 'ok' }>
             <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
               {title}
             </Typography>
-            <Box component="ul" sx={{ pl: 2.5, m: 0 }}>
+            <Box component="ul" sx={{ pl: 2.5, m: 0, listStyleType: 'disc' }}>
               {items.map((s) => (
                 <Typography component="li" variant="caption" key={s} sx={{ display: 'list-item', mb: 0.75 }}>
                   {s}
@@ -446,8 +446,10 @@ export const EffectLabPage = () => {
           </TableContainer>
 
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 3 }}>
-            分析バージョン {result.version} / 乱数シード {result.settings.seed} /
-            ブートストラップ {result.settings.bootstrap} 回。
+            分析バージョン {result.version} / 乱数シード {result.settings.seed}
+            {/* 分析不能のときはブートストラップを回していない。
+                設定値だから出す、をやると回したように読める */}
+            {result.status === 'ok' && ` / ブートストラップ ${result.settings.bootstrap} 回`}。
             同じシードなら何度実行しても同じ結果になります
           </Typography>
         </>
