@@ -13,6 +13,7 @@ import { AppIconButton } from '@/components/AppIconButton'
 import { ImageGallery } from '@/components/ImageGallery'
 import { TagChip } from '@/components/tw/TagChip'
 import { UserAvatar } from '@/components/UserAvatar'
+import { SALES, soldListingIds } from '@/data/account'
 import { findListing, LISTINGS } from '@/data/listings'
 
 const CONTAINER_SX = {
@@ -24,6 +25,7 @@ const CONTAINER_SX = {
 export const ItemDetailPage = () => {
   const { id } = useParams<{ id: string }>()
   const listing = id ? findListing(id) : undefined
+  const isSold = id ? soldListingIds(SALES).has(id) : false
   const theme = useTheme()
 
   if (!listing) {
@@ -114,17 +116,31 @@ export const ItemDetailPage = () => {
               px: { xs: 2.5, sm: 0 },
             }}
           >
-            <Button
-              component={Link}
-              to={`/checkout/${listing.id}`}
-              variant="contained"
-              color="primary"
-              size="large"
-              fullWidth
-              sx={{ py: 1.4, fontSize: 16 }}
-            >
-              購入手続きへ
-            </Button>
+            {/* 売却済みの出品を買えるままにしない。マイページが「売却済み」と
+                出しているのにここで購入できると、画面ごとに言うことが変わる */}
+            {isSold ? (
+              <Button
+                variant="contained"
+                size="large"
+                fullWidth
+                disabled
+                sx={{ py: 1.4, fontSize: 16 }}
+              >
+                売り切れました
+              </Button>
+            ) : (
+              <Button
+                component={Link}
+                to={`/checkout/${listing.id}`}
+                variant="contained"
+                color="primary"
+                size="large"
+                fullWidth
+                sx={{ py: 1.4, fontSize: 16 }}
+              >
+                購入手続きへ
+              </Button>
+            )}
           </Box>
         </Grid>
       </Grid>

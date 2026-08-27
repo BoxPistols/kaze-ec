@@ -236,7 +236,7 @@
     {
       "name": "MyPage",
       "path": "src/pages/MyPage.tsx",
-      "journey": "購入 8（振り返り）/ 出品 5（観察）。design/decisions/0002 で役割切替をタブ同居に決定",
+      "journey": "購入 8（振り返り）/ 出品 5（観察）/ **出品 8（振り返り・売上）**。design/decisions/0002 で役割切替をタブ同居に決定。売上サマリは decisions/0007 で「確定した売上と確定していない売上を分ける／平均単価・成約率・前月比は出さない」と決定",
       "components": [
         {
           "kaze": "Tabs",

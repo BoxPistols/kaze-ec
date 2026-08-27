@@ -14,12 +14,16 @@ import { TagChip } from '@/components/tw/TagChip'
 import {
   CURRENT_USER,
   PURCHASES,
+  SALES,
   selectMyListings,
   selectMyPurchases,
+  selectSales,
   summarizeListings,
+  summarizeSales,
   type MyListing,
   type PurchaseRecord,
   type PurchaseStatus,
+  type SalesSummary,
 } from '@/data/account'
 import { LISTINGS } from '@/data/listings'
 
@@ -120,6 +124,100 @@ const ListingRow = ({ item }: { item: MyListing }) => (
   </Card>
 )
 
+/**
+ * 売上サマリ（出品ジャーニー 8）。
+ *
+ * **合計を 1 つの数字で出さない。** 決済画面が「発送確認まで保留」と
+ * エスクローを見せているのに、売上側で全部足すと画面ごとに言っていることが
+ * 変わる（design/decisions/0007）。
+ *
+ * 出さないもの（画面にも書く）: 平均単価・成約率・前月比・予測。
+ * 売却 2 件から平均を出しても、その 2 件の値そのものにしかならない
+ */
+const Amount = ({
+  label,
+  amount,
+  count,
+  note,
+  strong,
+}: {
+  label: string
+  amount: number
+  count: number
+  note: string
+  strong?: boolean
+}) => (
+  <Box>
+    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+      {label}
+    </Typography>
+    <Typography
+      variant={strong ? 'h5' : 'h6'}
+      sx={{ fontWeight: 800, color: strong ? 'text.primary' : 'text.secondary' }}
+    >
+      ¥{amount.toLocaleString()}
+      <Typography component="span" variant="body2" sx={{ ml: 1, fontWeight: 400 }}>
+        {count} 件
+      </Typography>
+    </Typography>
+    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+      {note}
+    </Typography>
+  </Box>
+)
+
+const SalesSummaryCard = ({ summary }: { summary: SalesSummary }) => (
+  <Card variant="outlined" sx={{ mb: 2.5, borderRadius: 1.5, borderColor: 'divider' }}>
+    <CardContent>
+      <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 2 }}>
+        売上
+      </Typography>
+
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 2,
+          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+        }}
+      >
+        <Amount
+          label="確定した売上"
+          amount={summary.settled.amount}
+          count={summary.settled.count}
+          note="受け取りまで終わったもの"
+          strong
+        />
+        <Amount
+          label="確定していない売上"
+          amount={summary.pending.amount}
+          count={summary.pending.count}
+          note="発送待ち・発送済み。受取確認まで確定しない"
+        />
+      </Box>
+
+      <Box sx={{ display: 'flex', gap: 1, mt: 2.5, flexWrap: 'wrap' }}>
+        <TagChip label={`円決済 ${summary.byCurrency.jpy}`} variant="outlined" size="small" />
+        <TagChip
+          label={`ステーブルコイン決済 ${summary.byCurrency.stablecoin}`}
+          variant="outlined"
+          size="small"
+        />
+      </Box>
+
+      <Typography variant="caption" sx={{ display: 'block', mt: 2, color: 'text.secondary' }}>
+        手数料は購入者が負担するため、受取額は販売価格と同じです（決済原資によって
+        購入者の支払総額は変わります）。
+        <strong>
+          平均単価・成約率・前月比は出していません。
+        </strong>
+        売却{' '}
+        {summary.settled.count + summary.pending.count}{' '}
+        件では、平均を出してもその数件の値そのものになります。
+      </Typography>
+    </CardContent>
+  </Card>
+)
+
 const EmptyState = ({ message, action }: { message: string; action?: React.ReactNode }) => (
   <Box sx={{ py: 6, textAlign: 'center' }}>
     <Typography variant="body2" sx={{ color: 'text.secondary', mb: action ? 2 : 0 }}>
@@ -135,8 +233,9 @@ export const MyPage = () => {
   const active: TabKey = TAB_KEYS.includes(raw as TabKey) ? (raw as TabKey) : 'purchases'
 
   const purchases = selectMyPurchases(PURCHASES)
-  const myListings = selectMyListings(LISTINGS, PURCHASES, CURRENT_USER)
+  const myListings = selectMyListings(LISTINGS, SALES, CURRENT_USER)
   const summary = summarizeListings(myListings)
+  const sales = summarizeSales(selectSales(SALES))
 
   return (
     <Container sx={CONTAINER_SX}>
@@ -183,6 +282,8 @@ export const MyPage = () => {
 
       {active === 'listings' && (
         <>
+          <SalesSummaryCard summary={sales} />
+
           <Box sx={{ display: 'flex', gap: 1, mb: 2.5, flexWrap: 'wrap' }}>
             <TagChip label={`公開中 ${summary.onSale}`} color="primary" />
             <TagChip label={`売却済み ${summary.sold}`} color="success" />

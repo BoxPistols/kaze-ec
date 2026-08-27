@@ -17,6 +17,7 @@ import { AppIconButton } from '@/components/AppIconButton'
 import { SearchField } from '@/components/tw/SearchField'
 import { SortSelect } from '@/components/tw/SortSelect'
 import { TagChip } from '@/components/tw/TagChip'
+import { SALES, soldListingIds } from '@/data/account'
 import { ALL_TAGS, CATEGORIES, LISTINGS, type Listing } from '@/data/listings'
 import { useFavorites } from '@/hooks/useFavorites'
 import { SORT_OPTIONS, useListingFilters } from '@/hooks/useListingFilters'
@@ -30,10 +31,12 @@ const CONTAINER_SX = {
 const ListingCard = ({
   listing,
   favorited,
+  isSold,
   onToggleFavorite,
 }: {
   listing: Listing
   favorited: boolean
+  isSold: boolean
   onToggleFavorite: () => void
 }) => {
   const theme = useTheme()
@@ -63,10 +66,21 @@ const ListingCard = ({
             sx={{
               height: 168,
               backgroundImage: `linear-gradient(135deg, ${listing.swatch} 0%, ${alpha(listing.swatch, 0.65)} 100%)`,
+              // 売却済みは彩度を落とす。ただし色だけで伝えないので下のラベルも出す
+              filter: isSold ? 'grayscale(0.8)' : 'none',
             }}
             aria-hidden
           />
         </CardActionArea>
+        {isSold && (
+          <Chip
+            label="売り切れ"
+            size="small"
+            color="default"
+            // 右上はお気に入りボタンが占めているので左上に置く
+            sx={{ position: 'absolute', left: 10, top: 10, fontWeight: 700 }}
+          />
+        )}
         <Chip
           label={`¥${listing.price.toLocaleString()}`}
           size="small"
@@ -143,6 +157,9 @@ const ListingCard = ({
 }
 
 export const ItemListPage = () => {
+  // 売却の判定は 1 箇所（account.ts）から引く。画面ごとに別実装すると
+  // 「出品管理では売却済み、詳細では購入できる」がまた出る
+  const soldIds = soldListingIds(SALES)
   const { ids: favoriteIds, has: isFavorited, toggle: toggleFavorite, count } =
     useFavorites()
   const {
@@ -258,10 +275,11 @@ export const ItemListPage = () => {
           {results.map((listing) => (
             <Grid key={listing.id} size={{ xs: 12, sm: 6, md: 4 }}>
               <ListingCard
-            listing={listing}
-            favorited={isFavorited(listing.id)}
-            onToggleFavorite={() => toggleFavorite(listing.id)}
-          />
+                listing={listing}
+                favorited={isFavorited(listing.id)}
+                isSold={soldIds.has(listing.id)}
+                onToggleFavorite={() => toggleFavorite(listing.id)}
+              />
             </Grid>
           ))}
         </Grid>
